@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="impl/src/java"/>
+	<classpathentry kind="src" path="impl/src/test"/>
+	<classpathentry kind="src" path="pack/src/webapp"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-entity-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/search-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/search-model"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-event-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-util-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.2.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-user-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-id/jars/commons-id-0.1-dev.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-util"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
