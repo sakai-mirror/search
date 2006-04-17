@@ -14,5 +14,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-authz-api-dev.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-entity-api-dev.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-util-api-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-dev.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

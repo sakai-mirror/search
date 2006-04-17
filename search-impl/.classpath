@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-id/jars/commons-id-0.1-dev.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-util"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-dev.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
