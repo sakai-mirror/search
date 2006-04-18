@@ -6,7 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-entity-api-dev.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/search-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/search-model"/>
@@ -21,5 +20,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-util"/>
 	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
