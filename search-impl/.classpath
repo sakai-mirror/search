@@ -20,5 +20,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-util"/>
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.4.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/site-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/authz-api"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jtidy/jars/jtidy-4aug2000r7-dev.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-3.0-alpha1-20060424.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-scratchpad-3.0-alpha1-20060424.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/pdfbox/jars/pdfbox-0.7.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/message-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
