@@ -18,7 +18,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-id/jars/commons-id-0.1-dev.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/rwiki-util"/>
-	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-1.9.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/content-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/site-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/authz-api"/>
@@ -29,5 +28,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/message-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
+	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-misc-1.9.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-core-1.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
