@@ -28,6 +28,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/message-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/db-api"/>
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-misc-1.9.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/lucene/jars/lucene-core-1.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
