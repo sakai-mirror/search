@@ -22,6 +22,7 @@
 package org.sakaiproject.search.component.service.impl;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.event.api.NotificationEdit;
 import org.sakaiproject.event.api.NotificationService;
@@ -312,7 +314,18 @@ public class SearchServiceImpl implements SearchService
 			try
 			{
 				reloadStart = System.currentTimeMillis();
-				runningIndexSearcher = indexStorage.getIndexSearcher();
+				
+				// dont leave closing the index searcher to the GC. It may not happen fast enough.
+				IndexSearcher newRunningIndexSearcher = indexStorage.getIndexSearcher();
+				IndexSearcher oldRunningIndexSearcher = runningIndexSearcher;
+				runningIndexSearcher = newRunningIndexSearcher;
+				
+				try {
+					oldRunningIndexSearcher.close();
+				} catch ( Exception ex) {
+					log.debug("Failed to close old searcher ",ex);
+				}
+
 				reloadEnd = System.currentTimeMillis();
 			}
 			catch (IOException e)
@@ -423,9 +436,25 @@ public class SearchServiceImpl implements SearchService
 				return lock.getNodename();
 			}
 
-			public Date getCurrentWorkerETC()
+			public String getCurrentWorkerETC()
 			{
-				return lock.getExpires();
+				if ( SecurityService.isSuperUser() ) 
+				{
+					return MessageFormat.format(" due {0} <br> Last {1} in {2}s <br> Current {3} {4}",
+						new Object[] {
+						lock.getExpires(),
+						searchIndexBuilder.getLastDocument(),
+						searchIndexBuilder.getLastElapsed(),
+						searchIndexBuilder.getCurrentDocument(),
+						searchIndexBuilder.getCurrentElapsed()
+					});
+				}
+				else 
+				{
+					return MessageFormat.format(" due {0}",
+						new Object[] {
+							lock.getExpires()});
+				}
 			}
 
 			public List getWorkerNodes()
@@ -566,5 +595,7 @@ public class SearchServiceImpl implements SearchService
 	{
 		this.luceneSorters = luceneSorters;
 	}
+	
+	
 
 }
