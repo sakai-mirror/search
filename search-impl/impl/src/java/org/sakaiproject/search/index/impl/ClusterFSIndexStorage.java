@@ -326,7 +326,11 @@ public class ClusterFSIndexStorage implements IndexStorage
 					}
 					mergegroup[i] = mergegroupno;
 					if ( ninblock >= 10 ) {
-						groupstomerge[j++] = mergegroupno;
+						if ( sizeBlock < 200L*1024L*1024L) {
+							// only perform merge for segments < 200M
+							// oterwise we risk a 2G segment.
+							groupstomerge[j++] = mergegroupno;
+						}
 						mergegroupno++;
 						ninblock = 0;
 						
@@ -366,7 +370,7 @@ public class ClusterFSIndexStorage implements IndexStorage
 							if ( mergegroup[j] == groupstomerge[i]) {
 								Directory d = FSDirectory.getDirectory(segmentName[j],false);
 								if ( d.fileExists("segments") ) {
-									status.append("   Merge ").append(segmentName[i].getName()).append(" >> ").append(mergeSegment.getName()).append("\n");
+									status.append("   Merge ").append(segmentName[j].getName()).append(" >> ").append(mergeSegment.getName()).append("\n");
 									indexes.add(d);
 								}
 							}
