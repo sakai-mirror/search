@@ -207,4 +207,25 @@ public class SearchIndexStorage implements IndexStorage
 		return runningIndexStorage.getSegmentInfoList();
 	}
 
+	public void closeIndexReader(IndexReader indexReader) throws IOException
+	{
+		runningIndexStorage.closeIndexReader(indexReader);		
+	}
+
+	public void closeIndexWriter(IndexWriter indexWrite) throws IOException
+	{
+		runningIndexStorage.closeIndexWriter(indexWrite);
+	}
+	public boolean isMultipleIndexers()
+	{
+		return runningIndexStorage.isMultipleIndexers();
+	}
+
+	public void closeIndexSearcher(IndexSearcher indexSearcher)
+	{
+		runningIndexStorage.closeIndexSearcher(indexSearcher);
+		
+	}
+
+
 }

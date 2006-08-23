@@ -47,8 +47,6 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.event.api.EventTrackingService;
-import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchIndexBuilderWorker;
@@ -87,8 +85,6 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 
 	private EntityManager entityManager;
 
-	private EventTrackingService eventTrackingService;
-
 	private RDFSearchService rdfSearchService = null;
 
 	/**
@@ -100,8 +96,6 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 	{
 		ComponentManager cm = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
-		eventTrackingService = (EventTrackingService) load(cm,
-				EventTrackingService.class.getName(), true);
 		entityManager = (EntityManager) load(cm, EntityManager.class.getName(),
 				true);
 		searchIndexBuilder = (SearchIndexBuilder) load(cm,
@@ -116,10 +110,6 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 			if (searchIndexBuilder == null)
 			{
 				log.error("Search Index Worker needs searchIndexBuilder ");
-			}
-			if (eventTrackingService == null)
-			{
-				log.error("Search Index Worker needs EventTrackingService ");
 			}
 			if (entityManager == null)
 			{
@@ -258,27 +248,18 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 								}
 								finally
 								{
+									
 									if (indexReader != null)
 									{
-
-										indexReader.close();
+										indexStorage.closeIndexReader(indexReader);
 										indexReader = null;
 									}
 								}
-								if (worker.isRunning())
-								{
-									indexWrite = indexStorage
-											.getIndexWriter(false);
-								}
 							}
-							else
+							if (worker.isRunning())
 							{
-								// create for update
-								if (worker.isRunning())
-								{
-									indexWrite = indexStorage
-											.getIndexWriter(true);
-								}
+								indexWrite = indexStorage
+										.getIndexWriter(true);
 							}
 							for (Iterator tditer = runtimeToDo.iterator(); worker
 									.isRunning()
@@ -524,7 +505,7 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 						{
 							if (indexWrite != null)
 							{
-								indexWrite.close();
+								indexStorage.closeIndexWriter(indexWrite);
 								indexWrite = null;
 							}
 						}
@@ -598,10 +579,6 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 		if (worker.isRunning())
 		{
 
-			eventTrackingService.post(eventTrackingService.newEvent(
-					SearchService.EVENT_TRIGGER_INDEX_RELOAD,
-					"/searchindexreload", true,
-					NotificationService.PREF_IMMEDIATE));
 			long endTime = System.currentTimeMillis();
 			float totalTime = endTime - startTime;
 			float ndocs = totalDocs;
@@ -1024,6 +1001,11 @@ public class SearchIndexBuilderWorkerDaoImpl extends HibernateDaoSupport
 	public void setIndexStorage(IndexStorage indexStorage)
 	{
 		this.indexStorage = indexStorage;
+	}
+
+	public boolean isLockRequired()
+	{
+		return !indexStorage.isMultipleIndexers();
 	}
 
 

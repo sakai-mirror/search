@@ -49,6 +49,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.IndexReader;
 import org.sakaiproject.search.index.ClusterFilesystem;
 
 /**
@@ -82,6 +83,8 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 	private static final String INDEX_PATCHNAME = "indexpatch";;
 
 	private boolean autoDdl = false;
+
+	private boolean parallelIndex = false;
 
 	/**
 	 * If validate is true, all segments will be checked on initial startup and
@@ -130,6 +133,13 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			log.debug("Update: DB Segments = " + dbSegments.size());
 			// remove files not in the dbSegmentList
 			List localSegments = getLocalSegments();
+
+			List badLocalSegments = getBadLocalSegments();
+			// delete any bad local segments before we load so that they get
+			// updated
+			// from the db
+			deleteAll(badLocalSegments);
+
 			log.debug("Update: Local Segments = " + localSegments.size());
 
 			// which of the dbSegments are not present locally
@@ -236,7 +246,13 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			for (Iterator i = updateLocalSegments.iterator(); i.hasNext();)
 			{
 				SegmentInfo addsi = (SegmentInfo) i.next();
-				updateLocalSegment(connection, addsi);
+				try {
+					updateLocalSegment(connection, addsi);
+				} catch ( Exception ex ) {
+					// ignore failures to unpack a local segment. It may have been removed by
+					// annother node
+					log.info("Segment was not unpacked "+ex.getClass().getName()+":"+ex.getMessage());
+				}
 
 			}
 			// if we made any modifications, we also need to process the patch
@@ -250,7 +266,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			{
 				SegmentInfo si = (SegmentInfo) i.next();
 				File f = new File(searchIndexDirectory, si.getName());
-				segmentList.add(f.getPath());
+				if ( f.exists() ) {
+					// only add those segments that exist after the sync
+					segmentList.add(f.getPath());
+				}
 				log.debug("Segment Present at " + f.getName());
 			}
 
@@ -278,6 +297,15 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			}
 		}
 		return segmentList;
+	}
+
+	private void deleteAll(List badLocalSegments)
+	{
+		for (Iterator i = badLocalSegments.iterator(); i.hasNext();)
+		{
+			File f = (File) i.next();
+			deleteAll(f);
+		}
 	}
 
 	public long getTotalSize(File currentSegment)
@@ -318,6 +346,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			List dbSegments = getDBSegments(connection);
 			// remove files not in the dbSegmentList
 			List localSegments = getLocalSegments();
+			List badLocalSegments = getBadLocalSegments();
 
 			// find the dbSegments that are not present locally
 
@@ -337,6 +366,19 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 					{
 						found = true;
 						break;
+					}
+				}
+				// dont delete bad segments from the DB
+				if (!found)
+				{
+					for (Iterator j = badLocalSegments.iterator(); j.hasNext();)
+					{
+						File local_file = (File) j.next();
+						if (name.equals(local_file.getName()))
+						{
+							found = true;
+							break;
+						}
 					}
 				}
 				if (!found)
@@ -430,6 +472,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 
 			}
 			connection.commit();
+			deleteAll(badLocalSegments);
 		}
 		catch (Exception ex)
 		{
@@ -466,6 +509,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			List dbSegments = getDBSegments(connection);
 			// remove files not in the dbSegmentList
 			List localSegments = getLocalSegments();
+			List badLocalSegments = getBadLocalSegments();
 
 			// find the dbSegments that are not present locally
 
@@ -486,6 +530,20 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 						break;
 					}
 				}
+				// dont delete bad segments from the DB
+				if (!found)
+				{
+					for (Iterator j = badLocalSegments.iterator(); j.hasNext();)
+					{
+						File local_file = (File) j.next();
+						if (name.equals(local_file.getName()))
+						{
+							found = true;
+							break;
+						}
+					}
+				}
+
 				if (!found)
 				{
 					updateDBSegments.add(local_si);
@@ -525,6 +583,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				segmentList.add(f.getPath());
 			}
 			connection.commit();
+			deleteAll(badLocalSegments);
 		}
 		catch (Exception ex)
 		{
@@ -1221,14 +1280,52 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			{
 				if (files[i].isDirectory())
 				{
+
 					File timestamp = new File(files[i], TIMESTAMP_FILE);
 					if (timestamp.exists())
 					{
+						if (IndexReader.indexExists(files[i]))
+						{
 
-						SegmentInfo sgi = new SegmentInfo(files[i].getName(),
-								getTimeStamp(files[i]), false);
-						l.add(sgi);
-						log.debug("LO Segment " + sgi);
+							SegmentInfo sgi = new SegmentInfo(files[i]
+									.getName(), getTimeStamp(files[i]), false);
+							l.add(sgi);
+							log.debug("LO Segment " + sgi);
+						}
+						else
+						{
+							log
+									.warn("Found Orphaned directory with no segment information present "
+											+ files[i]);
+						}
+
+					}
+				}
+			}
+		}
+		return l;
+	}
+
+	private List getBadLocalSegments() throws IOException
+	{
+		List l = new ArrayList();
+		File searchDir = new File(searchIndexDirectory);
+		File[] files = searchDir.listFiles();
+		if (files != null)
+		{
+			for (int i = 0; i < files.length; i++)
+			{
+				if (files[i].isDirectory())
+				{
+
+					File timestamp = new File(files[i], TIMESTAMP_FILE);
+					if (timestamp.exists())
+					{
+						if (!IndexReader.indexExists(files[i]))
+						{
+							l.add(files[i]);
+						}
+
 					}
 				}
 			}
@@ -2252,6 +2349,8 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		}
 		catch (Exception ex)
 		{
+			log.warn(" Cant find last update time " + ex.getClass().getName()
+					+ ":" + ex.getMessage());
 			return 0;
 		}
 		finally
@@ -2286,7 +2385,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		List seginfo = new ArrayList();
 		try
 		{
-		
+
 			List l = new ArrayList();
 			File searchDir = new File(searchIndexDirectory);
 			File[] files = searchDir.listFiles();
@@ -2305,32 +2404,49 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 							tsize += lsize;
 							long ts = getLocalSegmentLastModified(files[i]);
 							String lastup = (new Date(ts)).toString();
-							
-							String size =null;
-							if ( lsize > 1024*1024*10 ) { 
-								size = String.valueOf(lsize/(1024*1024))+"MB";				 
-							} else if ( lsize >= 1024*1024 ) {
-								size = String.valueOf(lsize/(1024*1024))+"."+String.valueOf(lsize/(102*1024)+"MB");				 
-							} else  {
-								size = String.valueOf(lsize/(1024))+"KB";				 
+
+							String size = null;
+							if (lsize > 1024 * 1024 * 10)
+							{
+								size = String.valueOf(lsize / (1024 * 1024))
+										+ "MB";
 							}
-							seginfo.add( new Object[] {name, size, lastup });		
+							else if (lsize >= 1024 * 1024)
+							{
+								size = String.valueOf(lsize / (1024 * 1024))
+										+ "."
+										+ String.valueOf(lsize / (102 * 1024)
+												+ "MB");
+							}
+							else
+							{
+								size = String.valueOf(lsize / (1024)) + "KB";
+							}
+							seginfo.add(new Object[] { name, size, lastup });
 						}
 					}
 				}
 			}
 			String size = null;
-			if ( tsize > 1024*1024*10 ) { 
-				size = String.valueOf(tsize/(1024*1024))+"MB";				 
-			} else if ( tsize >= 1024*1024 ) {
-				size = String.valueOf(tsize/(1024*1024))+"."+String.valueOf(tsize/(102*1024)+"MB");				 
-			} else  {
-				size = String.valueOf(tsize/(1024))+"KB";				 
+			if (tsize > 1024 * 1024 * 10)
+			{
+				size = String.valueOf(tsize / (1024 * 1024)) + "MB";
 			}
-			seginfo.add( new Object[] {"Total", size, "" });		
+			else if (tsize >= 1024 * 1024)
+			{
+				size = String.valueOf(tsize / (1024 * 1024)) + "."
+						+ String.valueOf(tsize / (102 * 1024) + "MB");
+			}
+			else
+			{
+				size = String.valueOf(tsize / (1024)) + "KB";
+			}
+			seginfo.add(new Object[] { "Total", size, "" });
 		}
-		catch ( Exception ex ) {
-			seginfo.add("Failed to get Segment Info list "+ex.getClass().getName()+" "+ex.getMessage());
+		catch (Exception ex)
+		{
+			seginfo.add("Failed to get Segment Info list "
+					+ ex.getClass().getName() + " " + ex.getMessage());
 		}
 		return seginfo;
 
@@ -2339,30 +2455,69 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 	private long getLocalSegmentLastModified(File file)
 	{
 		long lm = file.lastModified();
-		if ( file.isDirectory() ) {
+		if (file.isDirectory())
+		{
 			File[] l = file.listFiles();
-			for ( int i = 0; i < l.length; i++  ) {
-				if ( l[i].lastModified() > lm ) {
+			for (int i = 0; i < l.length; i++)
+			{
+				if (l[i].lastModified() > lm)
+				{
 					lm = l[i].lastModified();
 				}
 			}
-			
-		} 
+
+		}
 		return lm;
 	}
 
 	private long getLocalSegmentSize(File file)
 	{
-		if ( file.isDirectory() ) {
+		if (file.isDirectory())
+		{
 			long lm = 0;
 			File[] l = file.listFiles();
-			for ( int i = 0; i < l.length; i++  ) {
+			for (int i = 0; i < l.length; i++)
+			{
 				lm += l[i].length();
 			}
 			return lm;
-			
-		} else {
+
+		}
+		else
+		{
 			return file.length();
 		}
+	}
+
+	public void getLock()
+	{
+		if (parallelIndex)
+		{
+			throw new RuntimeException("Parallel index is not implemented yet");
+		}
+
+	}
+
+	public void releaseLock()
+	{
+		if (parallelIndex)
+		{
+			throw new RuntimeException("Parallel index is not implemented yet");
+		}
+	}
+
+	public boolean isMultipleIndexers()
+	{
+		return parallelIndex;
+	}
+
+	public boolean isParallelIndex()
+	{
+		return parallelIndex;
+	}
+
+	public void setParallelIndex(boolean parallelIndex)
+	{
+		this.parallelIndex = parallelIndex;
 	}
 }

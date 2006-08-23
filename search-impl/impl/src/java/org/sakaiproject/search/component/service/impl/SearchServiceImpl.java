@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -168,19 +169,6 @@ public class SearchServiceImpl implements SearchService
 			notification.setAction(new SearchNotificationAction(
 					searchIndexBuilder));
 
-			// register a transient notification for resources
-			NotificationEdit sbnotification = notificationService
-					.addTransientNotification();
-
-			// add all the functions that are registered to trigger search index
-			// modification
-
-			sbnotification
-					.setFunction(SearchService.EVENT_TRIGGER_INDEX_RELOAD);
-
-			// set the action
-			sbnotification.setAction(new SearchReloadNotificationAction(this));
-
 			initComplete = true;
 			log.debug("init end");
 		}
@@ -313,11 +301,13 @@ public class SearchServiceImpl implements SearchService
 	 */
 	public void reload()
 	{
-		log.debug("Reload");
 		getIndexSearcher(true);
-
 	}
 
+	public void forceReload()
+	{
+		reloadStart = 0;
+	}
 
 	public IndexSearcher getIndexSearcher(boolean reload)
 	{
@@ -327,7 +317,7 @@ public class SearchServiceImpl implements SearchService
 			long lastUpdate = indexStorage.getLastUpdate();
 			if (lastUpdate > reloadStart)
 			{
-				log.info("Reloading Index ");
+				log.debug("Reloading Index, force=" + reload);
 				try
 				{
 					reloadStart = System.currentTimeMillis();
@@ -337,16 +327,20 @@ public class SearchServiceImpl implements SearchService
 
 					IndexSearcher newRunningIndexSearcher = indexStorage
 							.getIndexSearcher();
+
 					IndexSearcher oldRunningIndexSearcher = runningIndexSearcher;
 					runningIndexSearcher = newRunningIndexSearcher;
 
-					try
+					if (oldRunningIndexSearcher != null)
 					{
-						oldRunningIndexSearcher.close();
-					}
-					catch (Exception ex)
-					{
-						log.debug("Failed to close old searcher ", ex);
+						try
+						{
+							indexStorage.closeIndexSearcher(oldRunningIndexSearcher);
+						}
+						catch (Exception ex)
+						{
+							log.error("Failed to close old searcher ", ex);
+						}
 					}
 
 					reloadEnd = System.currentTimeMillis();
@@ -355,7 +349,12 @@ public class SearchServiceImpl implements SearchService
 				{
 					reloadStart = reloadEnd;
 				}
-			} 
+			}
+			else
+			{
+				log.debug("No Reload lastUpdate " + lastUpdate
+						+ " < lastReload " + reloadStart);
+			}
 		}
 
 		return runningIndexSearcher;
@@ -476,7 +475,8 @@ public class SearchServiceImpl implements SearchService
 													.getCurrentDocument(),
 											searchIndexBuilder
 													.getCurrentElapsed(),
-											ServerConfigurationService.getServerIdInstance()});
+											ServerConfigurationService
+													.getServerIdInstance() });
 				}
 				else
 				{
@@ -516,7 +516,6 @@ public class SearchServiceImpl implements SearchService
 			{
 				return pdocs;
 			}
-
 
 		};
 
@@ -634,7 +633,5 @@ public class SearchServiceImpl implements SearchService
 	{
 		return indexStorage.getSegmentInfoList();
 	}
-	
-	
 
 }

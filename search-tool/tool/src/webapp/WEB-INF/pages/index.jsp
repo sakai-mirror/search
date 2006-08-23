@@ -5,6 +5,7 @@
 		request.getAttribute(org.sakaiproject.search.tool.SearchBeanFactory.SEARCH_BEAN_FACTORY_ATTR);
 	org.sakaiproject.search.tool.SearchBean searchBean = searchBeanFactory.newSearchBean(request);
 	
+	String errorMessageFormat = "<div class=\"alertMessage\" >{0}</div>";
 	String searchItemFormat = "<p class=\"searchItem\" ><a href=\"{1}\" target=\"searchresult\" >{2}</a><br />"
 			+ "{3} <br/> "
 			+ "<span class=\"searchScore\" > Hit: {0} "
@@ -39,13 +40,13 @@
 <%@include file="header.jsp"%>
     	<div class="portletBody">    		
     	
+	  <% if ( searchBean.hasAdmin() ) { %>
     <div class="navIntraTool">
 	  <span class="rwiki_pageLinks">
-	  <% if ( searchBean.hasAdmin() ) { %>
 	    <a href="<%= searchBean.getToolUrl() %>/admin/index">Admin</a>
-	  <% } %>
 	  </span>
     </div>
+	  <% } %>
     <%
     if ( searchBean.isEnabled() ) 
     {
@@ -71,7 +72,7 @@
     </tr>
     </table>
 
-    <%= searchBean.getSearchResults(searchItemFormat) %>
+    <%= searchBean.getSearchResults(searchItemFormat,errorMessageFormat) %>
     
     <table cellspacing="0" cellpadding="0" >
     <tr valign="top" >
