@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hslf.extractor.PowerPointExtractor;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.search.api.SearchUtils;
 
 /**
  * @author ieb
@@ -57,7 +58,7 @@ public class PPTContentDigester extends BaseContentDigester
 			StringBuffer sb = new StringBuffer();
 			sb.append(pptExtractor.getText()).append(" ").append(
 					pptExtractor.getNotes());
-			return sb.toString();
+			return SearchUtils.getCleanString(sb.toString());
 		}
 		catch (Exception e)
 		{

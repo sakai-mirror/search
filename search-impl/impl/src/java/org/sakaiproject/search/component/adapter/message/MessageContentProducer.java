@@ -1,20 +1,20 @@
 /**********************************************************************************
- * $URL:  $
- * $Id:  $
+ * $URL: https://source.sakaiproject.org/svn/portal/trunk/portal-impl/impl/src/java/org/sakaiproject/portal/charon/SessionRequestHolder.java $
+ * $Id: SessionRequestHolder.java 14690 2006-09-15 11:43:18Z ian@caret.cam.ac.uk $
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006 The Sakai Foundation.
- *
- * Licensed under the Educational Community License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Copyright (c) 2006 The Sakai Foundation.
+ * 
+ * Licensed under the Educational Community License, Version 1.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.opensource.org/licenses/ecl1.php
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
  * limitations under the License.
  *
  **********************************************************************************/
@@ -47,6 +47,7 @@ import org.sakaiproject.message.api.MessageService;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchService;
+import org.sakaiproject.search.api.SearchUtils;
 import org.sakaiproject.search.model.SearchBuilderItem;
 
 /**
@@ -191,7 +192,7 @@ public class MessageContentProducer implements EntityContentProducer
 				
 				
 				
-				return sb.toString();
+				return sb.toString().replaceAll("[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\ud800-\\udfff\\uffff\\ufffe]", "");
 			}
 			catch (IdUnusedException e)
 			{
@@ -230,7 +231,9 @@ public class MessageContentProducer implements EntityContentProducer
 				}
 				
 				
-				return subject+"From " + mh.getFrom().getDisplayName();
+				String title =  subject+"From " + mh.getFrom().getDisplayName();
+				return SearchUtils.getCleanString(title);
+				
 			}
 			catch (IdUnusedException e)
 			{
