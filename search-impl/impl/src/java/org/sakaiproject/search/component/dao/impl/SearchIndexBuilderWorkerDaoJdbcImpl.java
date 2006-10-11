@@ -301,38 +301,38 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 									SearchService.DATE_STAMP,
 									String.valueOf(System
 											.currentTimeMillis()),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc.add(new Field(
 									SearchService.FIELD_CONTAINER,
-									container, Field.Store.YES,
+									container, Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc
 									.add(new Field(
 											SearchService.FIELD_ID,
 											ref.getId(),
-											Field.Store.YES,
+											Field.Store.COMPRESS,
 											Field.Index.NO));
 							doc.add(new Field(
 									SearchService.FIELD_TYPE, ref
 											.getType(),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc.add(new Field(
 									SearchService.FIELD_SUBTYPE,
 									ref.getSubType(),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc.add(new Field(
 									SearchService.FIELD_REFERENCE,
 									ref.getReference(),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 
 							doc.add(new Field(
 									SearchService.FIELD_CONTEXT,
 									sep.getSiteId(ref),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							if (sep.isContentFromReader(entity))
 							{
@@ -351,30 +351,30 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 												SearchService.FIELD_CONTENTS,
 												sep
 														.getContent(entity),
-												Field.Store.COMPRESS,
+												Field.Store.NO,
 												Field.Index.TOKENIZED,
 												Field.TermVector.YES));
 							}
 							doc.add(new Field(
 									SearchService.FIELD_TITLE, sep
 											.getTitle(entity),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.TOKENIZED,
 									Field.TermVector.YES));
 							doc.add(new Field(
 									SearchService.FIELD_TOOL, sep
 											.getTool(),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc.add(new Field(
 									SearchService.FIELD_URL, sep
 											.getUrl(entity),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 							doc.add(new Field(
 									SearchService.FIELD_SITEID, sep
 											.getSiteId(ref),
-									Field.Store.YES,
+									Field.Store.COMPRESS,
 									Field.Index.UN_TOKENIZED));
 
 							// add the custom properties
@@ -415,7 +415,7 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 													.add(new Field(
 															key,
 															values[i],
-															Field.Store.YES,
+															Field.Store.COMPRESS,
 															Field.Index.UN_TOKENIZED));
 										}
 									}
@@ -1125,7 +1125,10 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 						.hasNext();)
 				{
 					Site s = (Site) i.next();
-					contextList.add(s.getId());
+					if ( !SiteService.isSpecialSite(s.getId()) || 
+							SiteService.isUserSite(s.getId())) {
+						contextList.add(s.getId());
+					}
 				}
 			}
 			else
@@ -1135,16 +1138,19 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 			for (Iterator c = contextList.iterator(); c.hasNext();)
 			{
 				String siteContext = (String) c.next();
+				log.info("Rebuild for "+siteContext);
 				for (Iterator i = searchIndexBuilder.getContentProducers()
 						.iterator(); i.hasNext();)
 				{
 					EntityContentProducer ecp = (EntityContentProducer) i
 							.next();
-					List contentList = null;
-					contentList = ecp.getSiteContent(siteContext);
+					
+					Iterator contentIterator = null;
+					contentIterator = ecp.getSiteContentIterator(siteContext);
+					log.debug("Using ECP "+ecp);
 
 					int added = 0;
-					for (Iterator ci = contentList.iterator(); ci.hasNext();)
+					for (; contentIterator.hasNext();)
 					{
 						if ((System.currentTimeMillis() - lastupdate) > 60000L)
 						{
@@ -1156,7 +1162,8 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements
 										"Transaction Lock Expired while Rebuilding Index ");
 							}
 						}
-						String resourceName = (String) ci.next();
+						String resourceName = (String) contentIterator.next();
+						log.debug("Checking "+resourceName);
 						if (resourceName == null || resourceName.length() > 255)
 						{
 							log
