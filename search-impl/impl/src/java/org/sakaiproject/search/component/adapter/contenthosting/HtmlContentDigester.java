@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +42,8 @@ import org.w3c.tidy.Tidy;
 public class HtmlContentDigester extends BaseContentDigester
 {
 	private static Log log = LogFactory.getLog(HtmlContentDigester.class);
+  
+        private boolean useDirectParser = true;
 
 	/*
 	 * (non-Javadoc)
@@ -52,6 +56,32 @@ public class HtmlContentDigester extends BaseContentDigester
 				contentResource.getContentLength() > maxDigestSize  ) {
 			throw new RuntimeException("Attempt to get too much content as a string on "+contentResource.getReference());
 		}
+		if (useDirectParser)
+		{
+			try
+			{
+				String content = new String(contentResource.getContent(),"UTF-8");
+				StringBuilder sb = new StringBuilder();
+				for (Iterator<String> i = new HTMLParser(content); i.hasNext();)
+				{
+					String s = i.next();
+					if (s.length() > 0)
+					{
+						sb.append(s);
+					}
+				}
+				return SearchUtils.getCleanString(sb.toString());
+			}
+			catch (ServerOverloadException ex)
+			{
+				throw new RuntimeException("Failed get Resource Content ", ex);
+
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				throw new RuntimeException("Failed get Resource Content ", e);
+			}
+		} else {
 		InputStream contentStream = null;
 		Tidy tidy = new Tidy();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -95,6 +125,7 @@ public class HtmlContentDigester extends BaseContentDigester
 				{
 				}
 			}
+		}
 		}
 	}
 
