@@ -18,5 +18,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/user-api"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-1.1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jmock/jars/jmock-cglib-1.1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/cglib/jars/cglib-full-2.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
