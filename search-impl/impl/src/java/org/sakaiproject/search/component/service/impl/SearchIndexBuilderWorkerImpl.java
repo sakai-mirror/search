@@ -130,7 +130,7 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 
 	private EventTrackingService eventTrackingService;
 
-	private boolean runThreads = true;
+	private boolean runThreads = false;
 
 	private ThreadLocal nodeIDHolder = new ThreadLocal();
 
@@ -154,6 +154,12 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 
 	private String lastIndexing;
 
+	private boolean soakTest = false;
+
+	private boolean diagnostics;
+
+	private boolean started = false;
+
 	private static HashMap nodeIDList = new HashMap();;
 
 	private static String lockedTo = null;
@@ -169,7 +175,7 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 			+ "( id,nodename,lockkey, expires ) values ( ?, ?, ?, ? )";
 
 	private static String COUNT_WORK_SQL = " select count(*) "
-			+ "from searchbuilderitem where searchstate = ? and searchaction <> ? ";
+			+ "from searchbuilderitem where searchstate = ? ";
 
 	private static String CLEAR_LOCK_SQL = "update searchwriterlock "
 			+ "set nodename = ?, expires = ? where nodename = ? and lockkey = ? ";
@@ -189,6 +195,16 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 
 	public void init()
 	{
+		if ( started  && !runThreads  ) {
+			log.warn("JVM Shutdown in progress, will not startup");
+			return;
+		}
+		if ( org.sakaiproject.component.cover.ComponentManager.hasBeenClosed() ) {
+			log.warn("Component manager Shutdown in progress, will not startup");
+			return;
+		}
+		started = true;
+		runThreads =  true;
 		ComponentManager cm = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
 		eventTrackingService = (EventTrackingService) load(cm,
@@ -247,6 +263,22 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 						+ this.getClass().getName());
 				indexBuilderThread[i].start();
 			}
+			
+			/*
+			 * Capture shutdown 
+			 */
+			Runtime.getRuntime().addShutdownHook(new Thread(){
+				/* (non-Javadoc)
+				 * @see java.lang.Thread#run()
+				 */
+				@Override
+				public void run()
+				{
+					runThreads = false;
+				}
+			});
+			
+			
 		}
 		catch (Throwable t)
 		{
@@ -420,6 +452,10 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 					{
 						runThreads = false;
 						break;
+					}
+					if ( soakTest  && (searchService.getPendingDocs() == 0) ) {
+						log.error("SOAK TEST---SOAK TEST---SOAK TEST. Index Rebuild Started");
+						searchService.rebuildInstance();
 					}
 				}
 				catch (InterruptedException e)
@@ -806,18 +842,19 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 			if (takelock)
 			{
 				// any work ?
-				countWork.clearParameters();
-				countWork.setInt(1, SearchBuilderItem.STATE_PENDING.intValue());
-				countWork
-						.setInt(2, SearchBuilderItem.ACTION_UNKNOWN.intValue());
-				resultSet = countWork.executeQuery();
 				int nitems = 0;
-				if (resultSet.next())
+				if (!checklock)
 				{
-					nitems = resultSet.getInt(1);
+					countWork.clearParameters();
+					countWork.setInt(1, SearchBuilderItem.STATE_PENDING.intValue());
+					resultSet = countWork.executeQuery();
+					if (resultSet.next())
+					{
+						nitems = resultSet.getInt(1);
+					}
+					resultSet.close();
+					resultSet = null;
 				}
-				resultSet.close();
-				resultSet = null;
 				if (nitems > 0 || checklock)
 				{
 					try
@@ -1622,6 +1659,53 @@ public class SearchIndexBuilderWorkerImpl implements Runnable,
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return the soakTest
+	 */
+	public boolean getSoakTest()
+	{
+		return soakTest;
+	}
+
+	/**
+	 * Puts the index builder into a Soak test, when there are no pending items, it starts
+	 * building again.
+	 * @param soakTest the soakTest to set
+	 */
+	public void setSoakTest(boolean soakTest)
+	{
+		
+		this.soakTest = soakTest;
+		if ( soakTest ) {
+			log.warn("SOAK TEST ACTIVE ======================DONT USE FOR PRODUCTION ");
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.api.Diagnosable#disableDiagnostics()
+	 */
+	public void disableDiagnostics()
+	{
+		diagnostics = false;
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.api.Diagnosable#enableDiagnostics()
+	 */
+	public void enableDiagnostics()
+	{
+		diagnostics = true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.api.Diagnosable#hasDiagnostics()
+	 */
+	public boolean hasDiagnostics()
+	{
+		return diagnostics;
 	}
 
 }

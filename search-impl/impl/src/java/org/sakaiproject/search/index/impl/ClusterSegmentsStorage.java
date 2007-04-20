@@ -108,7 +108,7 @@ public class ClusterSegmentsStorage
 
 			try
 			{
-				addsi.checkSegmentValidity(false,"Unpack Segment");
+				addsi.checkSegmentValidity(searchService.hasDiagnostics(),"Unpack Segment");
 			}
 			catch (Exception ex)
 			{
@@ -289,8 +289,7 @@ public class ClusterSegmentsStorage
 		try
 		{
 			if ( log.isDebugEnabled() ) 
-			log.debug("    Packed Name[" + tmpFile.getName() + "]Checksum["
-					+ addsi.getCheckSum() + "]length[" + tmpFile.length()
+			log.debug("    Packed Name[" + tmpFile.getName() + "]length[" + tmpFile.length()
 					+ "][" + addsi+ "]");
 		}
 		catch (Exception e)
