@@ -42,5 +42,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/search-tool"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/search-util"/>
 	<classpathentry kind="var" path="M2_REPO/lucene/lucene-core/1.9.1/lucene-core-1.9.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/textmining/tm-extractors/0.4/tm-extractors-0.4.jar" sourcepath="M2_REPO/org/textmining/tm-extractors/0.4/tm-extractors-0.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
