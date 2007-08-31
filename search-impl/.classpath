@@ -43,5 +43,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/search-util"/>
 	<classpathentry kind="var" path="M2_REPO/lucene/lucene-core/1.9.1/lucene-core-1.9.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/textmining/tm-extractors/0.4/tm-extractors-0.4.jar" sourcepath="M2_REPO/org/textmining/tm-extractors/0.4/tm-extractors-0.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.5/hsqldb-1.8.0.5.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
