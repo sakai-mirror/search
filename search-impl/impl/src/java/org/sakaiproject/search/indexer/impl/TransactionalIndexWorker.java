@@ -55,6 +55,7 @@ import org.sakaiproject.search.transaction.api.TransactionIndexManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.thread_local.api.ThreadLocalManager;
 
 /**
  * @author ieb Unit test
@@ -94,6 +95,8 @@ public class TransactionalIndexWorker implements IndexWorker
 	 * dependency
 	 */
 	private List<IndexWorkerDocumentListener> indexWorkerDocumentListeners = new ArrayList<IndexWorkerDocumentListener>();
+
+	private ThreadLocalManager threadLocalManager;
 
 	public void init()
 	{
@@ -235,6 +238,7 @@ public class TransactionalIndexWorker implements IndexWorker
 					if (SearchBuilderItem.ACTION_ADD.equals(sbi.getSearchaction()))
 					{
 						ref = sbi.getName();
+						threadLocalManager.clear();
 						fireStartDocument(ref);
 
 						try
@@ -469,6 +473,7 @@ public class TransactionalIndexWorker implements IndexWorker
 						}
 					}
 					fireEndDocument(ref);
+					threadLocalManager.clear();
 				}
 
 			}
@@ -719,6 +724,22 @@ public class TransactionalIndexWorker implements IndexWorker
 	public void setTransactionIndexManager(TransactionIndexManager transactionIndexManager)
 	{
 		this.transactionIndexManager = transactionIndexManager;
+	}
+
+	/**
+	 * @return the threadLocalManager
+	 */
+	public ThreadLocalManager getThreadLocalManager()
+	{
+		return threadLocalManager;
+	}
+
+	/**
+	 * @param threadLocalManager the threadLocalManager to set
+	 */
+	public void setThreadLocalManager(ThreadLocalManager threadLocalManager)
+	{
+		this.threadLocalManager = threadLocalManager;
 	}
 
 }
