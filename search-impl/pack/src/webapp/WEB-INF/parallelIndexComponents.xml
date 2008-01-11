@@ -32,7 +32,7 @@
 		<property name="localIndexBase" ><value>${sakai.home}indexwork</value></property>
 		<property name="sharedJournalBase" ><value>${sakai.home}searchjournal</value></property>
 		<property name="minimumOptimizeSavePoints" ><value>10</value></property>
-		<property name="optimizMergeSize" ><value>5</value></property>
+		<property name="optimizeMergeSize" ><value>5</value></property>
 		<property name="soakTest" ><value>false</value></property>		
 	</bean>
 	
@@ -439,6 +439,7 @@
     	destroy-method="destroy" >
 			<property name="journaledObject"><ref bean="org.sakaiproject.search.api.SearchService.parallel.index.journaledFSIndexStorage" /></property>
 			<property name="mergeUpdateManager"><ref bean="org.sakaiproject.search.api.SearchService.parallel.index.mergeUpdateManager" /></property>
+			<property name="optimizeUpdateManager" ><ref bean="org.sakaiproject.search.api.SearchService.parallel.index.optimizeIndexManager" /></property>
     </bean>
     <!--
     local optimizer
