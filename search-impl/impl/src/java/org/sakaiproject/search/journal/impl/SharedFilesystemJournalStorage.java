@@ -96,6 +96,7 @@ public class SharedFilesystemJournalStorage implements JournalStorage
 			throws IOException
 	{
 		File indexLocation = new File(location);
+		log.info("++++++ Saving "+indexLocation+" to shared");
 		File tmpZip = new File(journalSettings.getJournalLocation(), transactionId
 				+ ".zip." + System.currentTimeMillis());
 		tmpZip.getParentFile().mkdirs();
@@ -103,7 +104,7 @@ public class SharedFilesystemJournalStorage implements JournalStorage
 		String replacePath = String.valueOf(transactionId);
 
 		FileOutputStream zout = new FileOutputStream(tmpZip);
-		FileUtils.pack(indexLocation, basePath, replacePath, zout);
+		FileUtils.pack(indexLocation, basePath, replacePath, zout, journalSettings.getCompressShared());
 		zout.close();
 
 		File journalZip = getTransactionFile(transactionId);

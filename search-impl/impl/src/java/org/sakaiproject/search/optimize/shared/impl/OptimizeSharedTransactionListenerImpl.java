@@ -36,6 +36,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.sakaiproject.search.api.SearchService;
 import org.sakaiproject.search.indexer.impl.SearchBuilderItemSerializer;
+import org.sakaiproject.search.journal.impl.JournalSettings;
 import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.search.optimize.api.OptimizeTransactionListener;
 import org.sakaiproject.search.optimize.api.OptimizedFailedIndexTransactionException;
@@ -60,6 +61,8 @@ public class OptimizeSharedTransactionListenerImpl implements OptimizeTransactio
 			.getLog(OptimizeSharedTransactionListenerImpl.class);
 
 	private SearchBuilderItemSerializer searchBuilderItemSerializer = new SearchBuilderItemSerializer();
+
+	private JournalSettings journalSettings;
 
 	public void init()
 	{
@@ -121,26 +124,27 @@ public class OptimizeSharedTransactionListenerImpl implements OptimizeTransactio
 	 */
 	public void prepare(IndexTransaction transaction) throws IndexTransactionException
 	{
-		/* 
-		 * Merge Method 1
-		 * The merge operation takes a list of segments and merges from the oldest one to the newest one
-		 * into a temporary segment. Sweeping up all deleted documents allong the way.
-		 * 
-		 *  SAK-12668, discovered that this was inefficient, since the oldest segment is the largest segment
-		 *  It will be more efficient to start at the target and sweep backwards collecting the deleted 
-		 *  elements as we go, that way only the final merge will be expensive and should scale a little 
-		 *  better.
+		/**
+		 * <pre>
+		 *  Merge Method 1
+		 *  The merge operation takes a list of segments and merges from the oldest one to the newest one
+		 *  into a temporary segment. Sweeping up all deleted documents allong the way.
 		 *  
-		 *  The fix for SAK-12668 is to reverse the order of merge so we have to deal with a number of smaller
-		 *  segments and finally a single large merge operation.
+		 *   SAK-12668, discovered that this was inefficient, since the oldest segment is the largest segment
+		 *   It will be more efficient to start at the target and sweep backwards collecting the deleted 
+		 *   elements as we go, that way only the final merge will be expensive and should scale a little 
+		 *   better.
+		 *   
+		 *   The fix for SAK-12668 is to reverse the order of merge so we have to deal with a number of smaller
+		 *   segments and finally a single large merge operation.
+		 *   
+		 *   We may consider not merging if the segments are too big. 
+		 *   All we are trying to do is reduce the restart load, and not necessarilly the number of big 
+		 *   segments in the journal.
 		 *  
-		 *  We may consider not merging if the segments are too big. 
-		 *  All we are trying to do is reduce the restart load, and not necessarilly the number of big 
-		 *  segments in the journal.
-		 * 
-		 *  I have checked the local index optimize which performs the operaiton in this way, except it
-		 *  does not need to perform the delete operations which have already been performed during the merge.
-		 * 
+		 *   I have checked the local index optimize which performs the operaiton in this way, except it
+		 *   does not need to perform the delete operations which have already been performed during the merge.
+		 * </pre>
 		 */
 		IndexReader reader = null;
 		IndexWriter indexWriter = null;
@@ -166,54 +170,74 @@ public class OptimizeSharedTransactionListenerImpl implements OptimizeTransactio
 					true);
 			indexWriter.setUseCompoundFile(true);
 			// indexWriter.setInfoStream(System.out);
-			indexWriter.setMaxMergeDocs(50);
-			indexWriter.setMergeFactor(50);
+			indexWriter.setMaxMergeDocs(journalSettings.getSharedMaxMergeDocs());
+			indexWriter.setMaxBufferedDocs(journalSettings.getSharedMaxBufferedDocs());
+			indexWriter.setMergeFactor(journalSettings.getSharedMaxMergeFactor());
 			indexWriter.close();
 
 			Map<String, String> deleteReferences = new HashMap<String, String>();
-			
-			for ( int i = optimizableSegments.size()-1; i >= 0; i-- )
+
+			indexWriter = new IndexWriter(workingDirectory, jtransaction.getAnalyzer(),
+					false);
+			indexWriter.setUseCompoundFile(true);
+			// indexWriter.setInfoStream(System.out);
+			indexWriter.setMaxMergeDocs(journalSettings.getSharedMaxMergeDocs());
+			indexWriter.setMaxBufferedDocs(journalSettings.getSharedMaxBufferedDocs());
+			indexWriter.setMergeFactor(journalSettings.getSharedMaxMergeFactor());
+
+			for (File f : optimizableSegments)
 			{
-				File f = optimizableSegments.get(i);
 				Directory d = FSDirectory.getDirectory(f, false);
 
 				long start = System.currentTimeMillis();
 
-				// apply all the deletes from the later (already merged) segments to this segment
 				reader = IndexReader.open(d);
-				for ( String name : deleteReferences.values()) {
-					reader.deleteDocuments(new Term(SearchService.FIELD_REFERENCE, name ));
-				}
-				reader.close();
-				
 				// collect additional delete references
 				List<SearchBuilderItem> deleteDocuments = searchBuilderItemSerializer
-				.loadTransactionList(f);
+						.loadTransactionList(f);
 				for (SearchBuilderItem sbi : deleteDocuments)
 				{
-					if (SearchBuilderItem.ACTION_DELETE.equals(sbi.getSearchaction()) ||
-							SearchBuilderItem.ACTION_ADD.equals(sbi.getSearchaction()))
+					if (SearchBuilderItem.ACTION_DELETE.equals(sbi.getSearchaction())
+							|| SearchBuilderItem.ACTION_ADD.equals(sbi.getSearchaction()))
 					{
-						deleteReferences.put(sbi.getName(), sbi.getName());
+						reader.deleteDocuments(new Term(SearchService.FIELD_REFERENCE,
+								sbi.getName()));
 					}
 				}
+				reader.close();
 
 				// merge the next index into temporary space
-				indexWriter = new IndexWriter(workingDirectory, jtransaction.getAnalyzer(),
-						false);
-				indexWriter.setUseCompoundFile(true);
-				// indexWriter.setInfoStream(System.out);
-				indexWriter.setMaxMergeDocs(50);
-				indexWriter.setMergeFactor(50);
-				
+
 				indexWriter.addIndexes(new Directory[] { d });
-				
-				indexWriter.optimize();
-				indexWriter.close();
+
 				searchBuilderItemSerializer.removeTransactionList(f);
 				long end = System.currentTimeMillis();
-				log.info("Merged SavePoint in "+(end-start)+" ms "+f.getPath());
+				log.info("Merged SavePoint " + f + " in " + (end - start) + " ms "
+						+ f.getPath());
 			}
+			long start = System.currentTimeMillis();
+			indexWriter.optimize();
+			indexWriter.close();
+			long end = System.currentTimeMillis();
+			log.info("Optimized Working SavePoint in " + (end - start) + " ms ");
+
+			/*
+			 * // merge into the target segment. log.info("=================
+			 * Merging into "+targetSegment); indexWriter = new
+			 * IndexWriter(targetSegment, jtransaction.getAnalyzer(), false);
+			 * indexWriter.setUseCompoundFile(true); //
+			 * indexWriter.setInfoStream(System.out);
+			 * indexWriter.setMaxMergeDocs(journalSettings.getSharedMaxMergeDocs());
+			 * indexWriter.setMaxBufferedDocs(journalSettings.getSharedMaxBufferedDocs());
+			 * indexWriter.setMergeFactor(journalSettings.getSharedMaxMergeFactor());
+			 * Directory d = FSDirectory.getDirectory(workingSegment, false);
+			 * indexWriter.addIndexes(new Directory[] { d }); start =
+			 * System.currentTimeMillis(); indexWriter.optimize();
+			 * indexWriter.close(); end = System.currentTimeMillis();
+			 * log.info("Optimized Target SavePoint in " + (end - start) + " ms
+			 * ");
+			 */
+
 		}
 		catch (IOException e)
 		{
@@ -261,6 +285,23 @@ public class OptimizeSharedTransactionListenerImpl implements OptimizeTransactio
 			log.warn("Failed to rollback ", ex);
 		}
 
+	}
+
+	/**
+	 * @return the journalSettings
+	 */
+	public JournalSettings getJournalSettings()
+	{
+		return journalSettings;
+	}
+
+	/**
+	 * @param journalSettings
+	 *        the journalSettings to set
+	 */
+	public void setJournalSettings(JournalSettings journalSettings)
+	{
+		this.journalSettings = journalSettings;
 	}
 
 }
