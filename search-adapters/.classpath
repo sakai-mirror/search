@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="impl/src/java"/>
 	<classpathentry kind="src" path="pack/src/webapp"/>
+	<classpathentry kind="src" path="impl/src/bundle"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/search-util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/search-api"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-event-api/SNAPSHOT/sakai-event-api-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-entity-api/SNAPSHOT/sakai-entity-api-SNAPSHOT.jar"/>
@@ -13,5 +13,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-message-api/SNAPSHOT/sakai-message-api-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util-api/SNAPSHOT/sakai-util-api-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util/SNAPSHOT/sakai-util-SNAPSHOT.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/search-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
