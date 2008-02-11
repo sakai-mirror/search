@@ -49,6 +49,8 @@ public class SearchBuilderItemImpl implements SearchBuilderItem
 
 	private String context = null;
 
+	private int lock = 0;
+
 	/**
 	 * @return Returns the action.
 	 */
@@ -154,14 +156,18 @@ public class SearchBuilderItemImpl implements SearchBuilderItem
 		{
 			action = SearchBuilderItem.actions[searchaction.intValue()];
 		}
-		String state = "invalid";
+		String state = "invalid:"+searchstate;
 		if (searchstate != null && searchstate.intValue() >= 0
 				&& searchstate.intValue() < SearchBuilderItem.states.length)
 		{
 			state = SearchBuilderItem.states[searchstate.intValue()];
 		}
+		String locked = " Not Locked";
+		if ( isLocked() ) {
+			locked = " Locked:"+getLock();
+		}
 
-		return "Action:" + action + " State:" + state + " Resource:" + name;
+		return "Action:" + action + " State:" + state + locked +" Resource:" + name;
 	}
 
 	/**
@@ -216,6 +222,37 @@ public class SearchBuilderItemImpl implements SearchBuilderItem
 				throw new RuntimeException("Unknown object Version while loading SearchBuiderItem");
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.model.SearchBuilderItem#getLock()
+	 */
+	public int getLock()
+	{
+		if ( lock == 0 && isLocked() ) {
+			return searchstate;
+		}
+		return lock ;
+	}
+
+	/**
+	 * @param nodeLock
+	 */
+	public void setLock(int nodeLock)
+	{
+		this.lock = nodeLock;
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.model.SearchBuilderItem#isLocked()
+	 */
+	public boolean isLocked()
+	{
+		return (this.lock > 0 || 
+				this.searchstate >= SearchBuilderItem.states.length ||
+				this.searchstate < 0);
+	}
+
 
 
 
