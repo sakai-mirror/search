@@ -89,6 +89,14 @@ public interface EntityContentProducer
 	boolean matches(String reference);
 
 	/**
+	 * Gets a list of Entity resource as a String to represent all indexable
+	 * content
+	 * @deprecated
+	 * @return
+	 */
+	List getAllContent();
+
+	/**
 	 * Get the search builder action associated with the event
 	 * @param event
 	 * @return

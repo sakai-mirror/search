@@ -46,7 +46,10 @@ import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchService;
 import org.sakaiproject.search.model.SearchBuilderItem;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.SiteService.SelectionType;
+import org.sakaiproject.site.api.SiteService.SortType;
 
 public class ContentHostingContentProducer implements EntityContentProducer
 {
@@ -81,7 +84,7 @@ public class ContentHostingContentProducer implements EntityContentProducer
 	/**
 	 * runtime injected
 	 */
-	private ArrayList<ContentDigester> digesters = new ArrayList<ContentDigester>();
+	private ArrayList digesters = new ArrayList();
 
 	/**
 	 * config injected dep
@@ -388,6 +391,30 @@ public class ContentHostingContentProducer implements EntityContentProducer
 		}
 	}
 
+	public List getAllContent()
+	{
+		boolean debug = log.isDebugEnabled();
+		List sites = siteService.getSites(SelectionType.ANY, null, null, null,
+				SortType.NONE, null);
+		List l = new ArrayList();
+		for (Iterator is = sites.iterator(); is.hasNext();)
+		{
+			Site s = (Site) is.next();
+			String siteCollection = contentHostingService.getSiteCollection(s.getId());
+			List siteContent = contentHostingService.getAllResources(siteCollection);
+			for (Iterator i = siteContent.iterator(); i.hasNext();)
+			{
+				ContentResource resource = (ContentResource) i.next();
+				l.add(resource.getReference());
+			}
+		}
+		if (debug)
+		{
+			log.debug("ContentHosting.getAllContent::" + l.size());
+		}
+		return l;
+
+	}
 
 	public Integer getAction(Event event)
 	{
@@ -474,7 +501,7 @@ public class ContentHostingContentProducer implements EntityContentProducer
 		boolean debug = log.isDebugEnabled();
 		String siteCollection = contentHostingService.getSiteCollection(context);
 		List siteContent = contentHostingService.getAllResources(siteCollection);
-		List<String> l = new ArrayList<String>();
+		List l = new ArrayList();
 		for (Iterator i = siteContent.iterator(); i.hasNext();)
 		{
 			ContentResource resource = (ContentResource) i.next();

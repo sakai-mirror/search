@@ -122,7 +122,7 @@ public class JournalOptimzationOperationTest extends TestCase
 	{
 		super.setUp();
 
-		testBase = new File("target");
+		testBase = new File("m2-target");
 		testBase = new File(testBase, "JournalOptimzationOperationTest");
 
 		FileUtils.deleteAll(testBase);

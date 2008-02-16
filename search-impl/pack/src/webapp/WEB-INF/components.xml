@@ -28,7 +28,7 @@
    <import resource="coreSearchComponents.xml" />
 -->
    <import resource="parallelIndexComponents.xml" />
+   <import resource="messageAdapterComponents.xml" />
    <import resource="contentAdapterComponents.xml" />
-   <import resource="siteAdapterComponents.xml" />
   
 </beans>

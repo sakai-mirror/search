@@ -68,7 +68,7 @@ public class LoadSaveSegmentListTest extends TestCase
 
 		journaledFSIndexStorage = new JournaledFSIndexStorage();
 		journaledFSIndexStorage.setThreadLocalManager(threadLocalManager);
-		testBase = new File("target");
+		testBase = new File("m2-target");
 		testBase = new File(testBase, "LoadSaveSegmentListTest");
 		FileUtils.deleteAll(testBase);
 		
