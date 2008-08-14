@@ -210,7 +210,7 @@ public class ControllerServlet2 extends HttpServlet
 				{
 					throw new ServletException("Unable to get " + ServerConfigurationService.class.getName());
 				}
-				if (serverConfigurationService.getString("servlet.container").equals("websphere") )
+				if ("websphere".equals(serverConfigurationService.getString("servlet.container")))
 					path = "index";
 				else
 					path = path.substring(1);
