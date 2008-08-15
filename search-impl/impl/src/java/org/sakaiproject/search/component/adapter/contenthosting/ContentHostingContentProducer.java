@@ -437,13 +437,13 @@ public class ContentHostingContentProducer implements EntityContentProducer
 			{
 				log.debug("ContentHosting.getAction" + event + ":delete");
 			}
-			if ( isForIndex(event.getResource())) {
+			if ( isForIndexDelete(event.getResource())) {
 				return SearchBuilderItem.ACTION_DELETE;
 			}
 		}
 		if (debug)
 		{
-			log.debug("ContentHosting.getAction" + event + ":uknown");
+			log.debug("ContentHosting.getAction" + event + ":unknown");
 		}
 		return SearchBuilderItem.ACTION_UNKNOWN;
 	}
@@ -589,6 +589,16 @@ public class ContentHostingContentProducer implements EntityContentProducer
 		this.defaultDigester = defaultDigester;
 	}
 
+	private boolean isForIndexDelete(String ref)
+	{
+		// nasty hack to not index dropbox without loading an entity from the DB
+		if ( ref.length() > "/content".length() && contentHostingService.isInDropbox(ref.substring("/content".length())) ) {
+				return false;
+		}
+
+		return true;
+	}
+	
 	public boolean isForIndex(String ref)
 	{
 		ContentResource contentResource;
@@ -639,6 +649,11 @@ public class ContentHostingContentProducer implements EntityContentProducer
 		}
 		catch (Exception ex)
 		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Current user cannot read ref: " + ref, ex);
+			}
+
 			return false;
 		}
 	}
