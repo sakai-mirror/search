@@ -29,6 +29,7 @@
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/easymock/easymock/2.4/easymock-2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar"/>
 	<classpathentry kind="var" path="M2_REPO/poi/poi/3.0-alpha3-20070301/poi-3.0-alpha3-20070301.jar"/>
 	<classpathentry kind="var" path="M2_REPO/poi/poi-scratchpad/3.0-alpha3-20070301/poi-scratchpad-3.0-alpha3-20070301.jar"/>
