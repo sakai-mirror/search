@@ -113,7 +113,7 @@ public class JournaledFSIndexStorageUpdateTransactionListener implements
 			String workingSpace = journaledIndex.getWorkingSpace();
 			journalStorage.retrieveSavePoint(journalEntry, workingSpace);
 			File f = new File(workingSpace, String.valueOf(journalEntry));
-			File segments = new File(f, "segments");
+			File segments = new File(f, "segments.gen");
 			if (segments.exists())
 			{
 				// apply the deletes to everything that went before

@@ -238,7 +238,8 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 			{
 				try
 				{
-					multiReader.close();
+					if (multiReader != null)
+						multiReader.close();
 				}
 				catch (Exception ex)
 				{
@@ -790,7 +791,7 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 			IndexReader.unlock(d);
 			log.warn("Unlocked Lucene Directory for update, hope this is Ok");
 		}
-		if (!d.fileExists("segments"))
+		if (!d.fileExists("segments.gen"))
 		{
 			IndexWriter iw = new IndexWriter(f, getAnalyzer(), true);
 			iw.setUseCompoundFile(true);
@@ -1125,7 +1126,8 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 			{
 				try
 				{
-					updateJournalSavePointPst.close();
+					if (updateJournalSavePointPst != null)
+						updateJournalSavePointPst.close();
 				}
 				catch (Exception ex)
 				{
@@ -1133,7 +1135,8 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 				}
 				try
 				{
-					insertJournalSavePointPst.close();
+					if (insertJournalSavePointPst != null)
+						insertJournalSavePointPst.close();
 				}
 				catch (Exception ex)
 				{
@@ -1141,7 +1144,8 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 				}
 				try
 				{
-					connection.close();
+					if (connection != null)
+						connection.close();
 				}
 				catch (Exception ex)
 				{
@@ -1265,7 +1269,7 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 							.getSearchIndexDirectory(), false);
 				}
 
-				if (!d.fileExists("segments"))
+				if (!d.fileExists("segments.gen"))
 				{
 					permanentIndexWriter = new IndexWriter(f, getAnalyzer(), true);
 					permanentIndexWriter.setUseCompoundFile(true);
