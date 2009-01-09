@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.sakaiproject.search.journal.api.IndexCloser;
@@ -136,7 +137,7 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 			{
 				ir.close();
 				if (log.isDebugEnabled())
-					log.debug("Closed " + ir.directory().toString());
+					log.debug("Closed indexreader " + ir);
 			}
 			catch (IOException ioex)
 			{
@@ -169,15 +170,17 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 					}
 				}
 			}
+			catch (AlreadyClosedException acex)
+			{
+				log.debug("Already closed");
+			}
 			catch (IOException ioex)
 			{
 				log.debug(ioex);
-
 			}
 		}
 		try
 		{
-
 			Directory d = this.directory();
 			if (d instanceof FSDirectory)
 			{
@@ -191,10 +194,17 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 				}
 			}
 		}
+		catch (AlreadyClosedException acex)
+		{
+			log.debug("Already closed");
+		}
+		catch (UnsupportedOperationException uoex)
+		{
+			log.debug(uoex);
+		}
 		catch (IOException ioex)
 		{
 			log.debug(ioex);
-
 		}
 
 		return true;

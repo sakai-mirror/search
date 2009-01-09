@@ -123,17 +123,22 @@ public class JournaledFSIndexStorageUpdateTransactionListener implements
 				{
 					IndexReader deleteIndexReader = journaledIndex
 							.getDeletionIndexReader();
+
+					log.debug("Deletion index reader is " + deleteIndexReader);
+
 					transaction.put(
 							JournaledFSIndexStorageUpdateTransactionListener.class
 									.getName()
 									+ ".deleteIndexReader", deleteIndexReader);
+
+					log.debug("Deleting documents for savePoint " + journalEntry);
 
 					for (SearchBuilderItem sbi : deleteDocuments)
 					{
 						if (SearchBuilderItem.ACTION_DELETE.equals(sbi.getSearchaction()) ||
 								SearchBuilderItem.ACTION_ADD.equals(sbi.getSearchaction()))
 						{
-							log.debug("Deleting savePoint " + sbi.getName() + " for "
+							log.debug("Deleting " + sbi.getName() + " for savePoint "
 									+ journalEntry);
 							int ndel = deleteIndexReader.deleteDocuments(new Term(
 									SearchService.FIELD_REFERENCE, sbi.getName()));
