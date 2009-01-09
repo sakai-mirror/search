@@ -486,6 +486,8 @@ public class SearchIndexerNode
 	public void testSlowSearch() throws Exception
 	{
 		long start1 = System.currentTimeMillis();
+
+		log.debug("Getting index searcher");
 		IndexSearcher is = journaledFSIndexStorage.getIndexSearcher();
 		TermQuery tq = new TermQuery(new Term(SearchService.FIELD_CONTENTS, "node"));
 

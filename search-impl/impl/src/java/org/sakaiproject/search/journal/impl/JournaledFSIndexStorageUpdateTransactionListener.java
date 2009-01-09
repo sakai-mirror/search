@@ -158,6 +158,8 @@ public class JournaledFSIndexStorageUpdateTransactionListener implements
 				}
 				
 				// add the index in
+				log.debug("Adding segment to journaledIndex " + journaledIndex);
+
 				journaledIndex.addSegment(f);
 			}
 		}
@@ -165,6 +167,8 @@ public class JournaledFSIndexStorageUpdateTransactionListener implements
 		{
 			throw new IndexTransactionException("Failed to delete documents ", ioex);
 		}
+
+		log.debug("Finished");
 
 	}
 

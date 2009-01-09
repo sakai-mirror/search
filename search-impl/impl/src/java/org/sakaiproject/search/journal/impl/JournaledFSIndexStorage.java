@@ -509,12 +509,15 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 	public IndexSearcher getIndexSearcher() throws IOException
 	{
 
+		log.debug("getIndexSearcher(): " + indexSearcher);
+
 		if (indexSearcher == null)
 		{
 			loadIndexSearcherInternal();
 		}
 		if (indexSearcher instanceof ThreadBinder)
 		{
+			log.debug("getIndexSearcher(): " + indexSearcher + " threadbinder");
 			((ThreadBinder) indexSearcher).bind(threadLocalManager);
 		}
 
@@ -526,8 +529,13 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 	 */
 	private void loadIndexSearcherInternal() throws IOException
 	{
+		log.debug("loadIndexSearcherInternal()");
+
 		IndexReader tmpIndexReader = multiReader;
 		final IndexReader ir = getIndexReader();
+
+		log.debug("index reader is: " + ir);
+
 		if (tmpIndexReader != ir || indexSearcher == null)
 		{
 			long start = System.currentTimeMillis();
@@ -650,6 +658,8 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 
 	public IndexReader getIndexReader() throws IOException
 	{
+		log.debug("getIndexReader()");
+
 		boolean current = false;
 		long start = System.currentTimeMillis();
 		try
