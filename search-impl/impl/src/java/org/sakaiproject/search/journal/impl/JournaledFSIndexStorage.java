@@ -765,7 +765,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 		{
 			((ThreadBinder) multiReader).bind(threadLocalManager);
 		}
-		return multiReader;
+		
+		log.debug("getIndexReader() returning " + multiReader);
+		return multiReader; 
 	}
 
 	/*

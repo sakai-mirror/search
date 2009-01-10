@@ -104,6 +104,7 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 	 */
 	public boolean doFinalClose()
 	{
+		log.debug("doFinalClose() on " + this);
 		if (canClose())
 		{
 			return forceClose();
@@ -112,7 +113,8 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 	}
 
 	public boolean forceClose()
-	{
+	{	
+		log.debug("forceClose() on " + this);
 		synchronized (closeMonitor)
 		{
 			if (closing) return true;
@@ -255,6 +257,7 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 					{
 						if (ir instanceof ThreadBound)
 						{
+							log.debug("Calling unbind for " + ir);
 							((ThreadBound) ir).unbind();
 						}
 
@@ -263,6 +266,7 @@ public class RefCountMultiReader extends MultiReader implements ThreadBound,
 
 				if (canClose())
 				{
+					log.debug("Calling forceClose for " + this);
 					forceClose();
 				}
 			}

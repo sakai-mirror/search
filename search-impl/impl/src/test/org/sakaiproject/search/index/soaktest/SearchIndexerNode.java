@@ -518,7 +518,7 @@ public class SearchIndexerNode
 	{
 		journaledFSIndexStorage.markModified();
 		journaledFSIndexStorage.getIndexReader();
-		log.info("Reopend Index");
+		log.info("Reopened Index");
 
 	}
 
