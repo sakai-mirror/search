@@ -34,6 +34,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.apache.poi.poifs.filesystem.DocumentInputStream;
 import org.apache.poi.util.LittleEndian;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.search.api.SearchUtils;
 
 /**
@@ -107,6 +108,9 @@ public class PPTContentDigester extends BaseContentDigester
 			reader.read(contentStream);
 			os.flush();
 			StringBuilder sb = new StringBuilder();
+			ResourceProperties  rp  = contentResource.getProperties();
+			sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
+			sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
 			SearchUtils.appendCleanString(new String(os.toByteArray(), "UTF-8"), sb);
 			return sb.toString();
 		}

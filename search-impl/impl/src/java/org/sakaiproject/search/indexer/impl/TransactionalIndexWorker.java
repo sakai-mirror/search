@@ -48,6 +48,7 @@ import org.sakaiproject.search.indexer.api.IndexWorker;
 import org.sakaiproject.search.indexer.api.IndexWorkerDocumentListener;
 import org.sakaiproject.search.indexer.api.IndexWorkerListener;
 import org.sakaiproject.search.indexer.api.NoItemsToIndexException;
+import org.sakaiproject.search.journal.impl.JournalSettings;
 import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.search.transaction.api.IndexTransaction;
 import org.sakaiproject.search.transaction.api.IndexTransactionException;
@@ -318,6 +319,19 @@ public class TransactionalIndexWorker implements IndexWorker
 								doc.add(new Field(SearchService.FIELD_CONTEXT,
 										filterNull(sep.getSiteId(ref)),
 										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										
+								// add the ID to the contents to trap the filename
+								String idIndex = filterPunctuation(sep.getId(ref));
+								doc.add(new Field(SearchService.FIELD_CONTENTS,
+										idIndex, Field.Store.COMPRESS,
+										Field.Index.TOKENIZED, Field.TermVector.YES));
+								
+								// add the title
+								String title = filterPunctuation(sep.getTitle(ref));
+										doc.add(new Field(SearchService.FIELD_CONTENTS,
+										title, Field.Store.COMPRESS,
+										Field.Index.TOKENIZED, Field.TermVector.YES));
+		
 								if (sep.isContentFromReader(ref))
 								{
 									contentReader = sep.getContentReader(ref);
@@ -338,7 +352,7 @@ public class TransactionalIndexWorker implements IndexWorker
 												+ content + "]");
 									}
 									doc.add(new Field(SearchService.FIELD_CONTENTS,
-											filterNull(content), Field.Store.NO,
+											filterNull(content), Field.Store.COMPRESS,
 											Field.Index.TOKENIZED, Field.TermVector.YES));
 								}
 
@@ -496,6 +510,20 @@ public class TransactionalIndexWorker implements IndexWorker
 		return nprocessed;
 
 	}
+	
+	private String filterPunctuation(String term) {
+		if ( term == null ) {
+			return "";
+		}
+		char[] endTerm = term.toCharArray();
+		for ( int i = 0; i < endTerm.length; i++ ) {
+			if ( !Character.isLetterOrDigit(endTerm[i]) ) {
+				endTerm[i] = ' ';
+			}
+		}
+		return new String(endTerm);
+	}
+
 
 	/**
 	 * 

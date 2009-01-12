@@ -36,6 +36,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 
 /**
  * @author ieb
@@ -138,7 +139,12 @@ public class XLContentDigester extends BaseContentDigester
 	{
 		CharArrayWriter writer = new CharArrayWriter();
 		loadContent(writer, contentResource);
-		return new String(writer.toCharArray());
+		ResourceProperties  rp  = contentResource.getProperties();
+		StringBuilder sb = new StringBuilder();
+		sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
+		sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
+		sb.append(writer.toCharArray());
+		return sb.toString();
 	}
 	
 	

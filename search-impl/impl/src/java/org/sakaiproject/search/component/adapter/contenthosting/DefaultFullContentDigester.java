@@ -29,6 +29,7 @@ import java.io.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.search.api.SearchUtils;
 
 /**
@@ -49,7 +50,12 @@ public class DefaultFullContentDigester extends DefaultContentDigester
 		}
 		try
 		{
-			return SearchUtils.appendCleanString(new String(contentResource.getContent(),"UTF-8"), null).toString();
+			ResourceProperties  rp  = contentResource.getProperties();
+			StringBuilder sb = new StringBuilder();
+			sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
+			sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
+			SearchUtils.appendCleanString(new String(contentResource.getContent(),"UTF-8"), sb);
+			return sb.toString();
 		}
 		catch (Exception e)
 		{

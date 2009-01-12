@@ -28,6 +28,7 @@ import java.io.StringReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.search.api.SearchUtils;
 import org.textmining.text.extraction.WordExtractor;
 
@@ -66,6 +67,9 @@ public class WordContentDigester extends BaseContentDigester
 
 			
 			StringBuilder sb = new StringBuilder();
+			ResourceProperties  rp  = contentResource.getProperties();
+			sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
+			sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
 			SearchUtils.appendCleanString(text,sb);
 			return sb.toString();
 		}
