@@ -31,7 +31,6 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.search.api.SearchUtils;
 import org.sakaiproject.search.component.adapter.util.DigestHtml;
@@ -65,9 +64,6 @@ public class HtmlContentDigester extends BaseContentDigester
 			{
 				String content = new String(contentResource.getContent(),"UTF-8");
 				StringBuilder sb = new StringBuilder();
-				ResourceProperties  rp  = contentResource.getProperties();
-				sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
-				sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
 				for (Iterator<String> i = new HTMLParser(content); i.hasNext();)
 				{
 					String s = i.next();
@@ -107,12 +103,7 @@ public class HtmlContentDigester extends BaseContentDigester
 				String tidyOut = SearchUtils.appendCleanString(new String(baos.toByteArray(),"UTF-8"),null).toString();
 				log.info(contentResource.getReference() + " Tidy Output was " + tidyOut);
 				log.debug("Tidy Output was " + tidyOut);
-				ResourceProperties  rp  = contentResource.getProperties();
-				StringBuilder sb = new StringBuilder();
-				sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
-				sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
-				sb.append(DigestHtml.digest(tidyOut));
-				return sb.toString();
+				return DigestHtml.digest(tidyOut);
 
 			}
 			catch (ServerOverloadException e)

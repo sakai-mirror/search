@@ -33,7 +33,6 @@ import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.util.PDFTextStripper;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.search.api.SearchUtils;
 
 /**
@@ -64,12 +63,7 @@ public class PDFContentDigester extends BaseContentDigester
 			CharArrayWriter cw = new CharArrayWriter();
 			stripper.writeText(pddoc, cw);
 			pddoc.close();
-			ResourceProperties  rp  = contentResource.getProperties();
-			StringBuilder sb = new StringBuilder();
-			sb.append(rp.getProperty(ResourceProperties.PROP_DISPLAY_NAME)).append(" ");
-			sb.append(rp.getProperty(ResourceProperties.PROP_DESCRIPTION)).append(" ");
-			SearchUtils.appendCleanString(cw.toCharArray(), sb);
-			return sb.toString();
+			return SearchUtils.appendCleanString(cw.toCharArray(),null).toString();
 		}
 		catch (Exception ex)
 		{
