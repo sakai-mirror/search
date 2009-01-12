@@ -320,17 +320,23 @@ public class ContentHostingContentProducer implements EntityContentProducer
 		boolean debug = log.isDebugEnabled();
 		if (cr.getContentLength() > digesterSizeLimit)
 		{
+			log.warn("content is too large using default digester");
 			return defaultDigester;
 		}
 		String mimeType = cr.getContentType();
 		for (Iterator i = digesters.iterator(); i.hasNext();)
 		{
+			
 			ContentDigester digester = (ContentDigester) i.next();
 			if (digester.accept(mimeType))
 			{
-				return digester;
+				log.debug("found digester for " + mimeType);
+				return digester; 
 			}
 		}
+		log.warn("found no digester using default: " + mimeType);
+		
+		
 		return defaultDigester;
 
 	}

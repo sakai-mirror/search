@@ -189,6 +189,12 @@
       <version>3.0</version>
       <type>jar</type>
     </dependency>
+    <!-- for getting image metta data -->
+    <dependency>
+      <groupId>org.apache.sanselan</groupId>
+  	  <artifactId>sanselan</artifactId>
+  	  <version>0.94-incubator</version>
+  	 </dependency>
 <!--
     HSQL DB does not have clean transaction isolation 
     and hence cannot be used to correctly test the 

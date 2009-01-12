@@ -123,5 +123,17 @@
        </property>
     </bean> 
     
+    <bean id="org.sakaiproject.search.component.adapter.contenthosting.ImageContentDigeter" 
+    class="org.sakaiproject.search.component.adapter.contenthosting.ImageContentDigeter"
+     init-method="init" 
+     destroy-method="destroy">
+    <property name="contentProducer"><ref bean="org.sakaiproject.search.component.adapter.contenthosting.ContentHostingContentProducer" /></property>
+       <property name="mimeTypes">
+          <map>
+             <entry key="image/jpeg"><value>image/jpeg</value></entry>
+          </map>
+       </property>
+    </bean>
+    
   
 </beans>
