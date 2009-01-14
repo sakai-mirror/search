@@ -155,15 +155,21 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>poi</groupId>
+      <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
-      <version>3.0-alpha3-20070301</version>
+      <version>3.5-beta4</version>
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>poi</groupId>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.5-beta4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
       <artifactId>poi-scratchpad</artifactId>
-      <version>3.0-alpha3-20070301</version>
+      <version>3.5-beta4</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -171,11 +177,6 @@
       <artifactId>pdfbox</artifactId>
       <version>0.7.3</version>
       <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.textmining</groupId>
-      <artifactId>tm-extractors</artifactId>
-      <version>0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
