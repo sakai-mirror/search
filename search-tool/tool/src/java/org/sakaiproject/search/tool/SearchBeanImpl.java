@@ -512,12 +512,7 @@ public class SearchBeanImpl implements SearchBean
 	protected String[] getToolPropertySiteIds() {
 		Properties props = extractPropertiesFromTool();
 		String[] searchSiteIds;
-		if (siteService.isUserSite(siteId)) {
-			log.debug("Searching all sites");
-			searchSiteIds = getAllUsersSites();
-		} else {
-			searchSiteIds = extractSiteIdsFromProperties(props);
-		}
+		searchSiteIds = extractSiteIdsFromProperties(props);
 		return searchSiteIds;
 	}
 	
@@ -777,7 +772,7 @@ public class SearchBeanImpl implements SearchBean
 				{
 					final String searchURL = "?search="
 							+ URLEncoder.encode(search, "UTF-8") + "&page="
-							+ String.valueOf(cpage);
+							+ String.valueOf(cpage)+"&scope=" + this.scope;
 
 					final String name = String.valueOf(cpage + 1);
 					String cssInd = "1";
@@ -990,6 +985,7 @@ public class SearchBeanImpl implements SearchBean
 			f = f / divisorTerms;
 			j--;
 			final String weight = String.valueOf(f);
+			final String searchScope = this.scope.name();
 			finalTermList.add(new SearchTerm()
 			{
 
@@ -1003,7 +999,7 @@ public class SearchBeanImpl implements SearchBean
 					try
 					{
 						return FormattedText
-								.escapeHtml("?panel=Main&search=" + URLEncoder.encode(t.term,"UTF-8"), false);
+								.escapeHtml("?panel=Main&search=" + URLEncoder.encode(t.term,"UTF-8")+"&scope=" + searchScope, false);
 					}
 					catch (UnsupportedEncodingException e)
 					{
