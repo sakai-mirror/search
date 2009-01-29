@@ -127,6 +127,9 @@ public class SearchBeanImpl implements SearchBean
 	 * The default request page
 	 */
 	private int requestPage = 0;
+	
+	
+	private int censoredResults = 0;
 
 	/**
 	 * The current search list
@@ -167,6 +170,8 @@ public class SearchBeanImpl implements SearchBean
 	
 	private String currentUser;
 
+	private List<SearchOutputItem> outputItems;
+	
 	// Empty constructor to aid in testing.
 	 
 	public SearchBeanImpl(String siteId, SearchService ss, String search,ToolManager tm) {
@@ -824,114 +829,124 @@ public class SearchBeanImpl implements SearchBean
 	 */
 	public List<SearchOutputItem> getResults()
 	{
-		List<SearchOutputItem> l = new ArrayList<SearchOutputItem>();
+		if (outputItems == null) {
+			
+		outputItems = new ArrayList<SearchOutputItem>();
 		SearchList sl = search();
 		for (Iterator i = sl.iterator(); i.hasNext();)
 		{
 			final SearchResult sr = (SearchResult) i.next();
 			
-			l.add(new SearchOutputItem()
-			{
-
-				public String getSearchResult()
+			if (!sr.isCensored()) {
+				outputItems.add(new SearchOutputItem()
 				{
-					try
-					{
-						return sr.getSearchResult();
-					}
-					catch (Exception ex)
-					{
-						return "";
-					}
-				}
 
-				public String getTitle()
-				{
-					try
+					public String getSearchResult()
 					{
-						return FormattedText.escapeHtml(sr.getTitle(), false);
-					}
-					catch (Exception ex)
-					{
-						return "";
+						try
+						{
+							return sr.getSearchResult();
+						}
+						catch (Exception ex)
+						{
+							return "";
+						}
 					}
 
-				}
+					public String getTitle()
+					{
+						try
+						{
+							return FormattedText.escapeHtml(sr.getTitle(), false);
+						}
+						catch (Exception ex)
+						{
+							return "";
+						}
 
-				public String getTool()
-				{
-					try
-					{
-						return FormattedText.escapeHtml(sr.getTool(), false);
-					}
-					catch (Exception ex)
-					{
-						return "";
-					}
-
-				}
-
-				public String getUrl()
-				{
-					try
-					{
-						return FormattedText.escapeHtml(sr.getUrl(), false);
-					}
-					catch (Exception ex)
-					{
-						return "";
 					}
 
-					
+					public String getTool()
+					{
+						try
+						{
+							return FormattedText.escapeHtml(sr.getTool(), false);
+						}
+						catch (Exception ex)
+						{
+							return "";
+						}
 
-				}
-				
-				private Site site = null;
+					}
 
-				public String getSiteURL() {
-					
-					if (site == null)
-						site = getSite();
-					
-					return (site != null) ? site.getUrl() : null;
-				}
-				
-				public String getSiteTitle() {
+					public String getUrl()
+					{
+						try
+						{
+							return FormattedText.escapeHtml(sr.getUrl(), false);
+						}
+						catch (Exception ex)
+						{
+							return "";
+						}
+
+
+
+					}
+
+					private Site site = null;
+
+					public String getSiteURL() {
+
 						if (site == null)
 							site = getSite();
-						
+
+						return (site != null) ? site.getUrl() : null;
+					}
+
+					public String getSiteTitle() {
+						if (site == null)
+							site = getSite();
+
 						if (site != null)
 							return FormattedText.escapeHtml(site.getTitle(), false);
-					
-					
-					return "";
 
-				}
-				
-				private Site getSite() {
-					try {
-						Site s = siteService.getSite(sr.getSiteId());
-						return s;
-					} catch (IdUnusedException e) {
-						log.warn("site: " + sr.getSiteId() + "referenced in search results doesn't exits");
+
+						return "";
+
 					}
-					
-					return null;
-				}
 
-				public boolean isVisible() {
-					if (sr.isCensored())
-						return false;
-					else 
-						return true;
-				}
-					
-				
+					private Site getSite() {
+						try {
+							Site s = siteService.getSite(sr.getSiteId());
+							return s;
+						} catch (IdUnusedException e) {
+							log.warn("site: " + sr.getSiteId() + "referenced in search results doesn't exits");
+						}
 
-			});
+						return null;
+					}
+
+					public boolean isVisible() {
+						if (sr.isCensored())
+							return false;
+						else 
+							return true;
+					}
+
+
+
+		
+				});
 			
+			} else {
+				censoredResults++;
+			}
+		
 		}
-		return l;
+		}
+		
+		return outputItems;
 	}
 
 	/*
@@ -957,7 +972,15 @@ public class SearchBeanImpl implements SearchBean
 				Double.valueOf(timeTaken) });
 
 	}
-
+	
+	public String getSearchFoundCensored()
+	{
+		if (this.getCensoredResultCount() == 1)
+			return MessageFormat.format(Messages.getString("jsp_results_no_perm_singular"), new Object[] { censoredResults });
+		else
+			return MessageFormat.format(Messages.getString("jsp_results_no_perm_plural"), new Object[] { censoredResults });
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1132,5 +1155,12 @@ public class SearchBeanImpl implements SearchBean
 
 		
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.search.tool.api.SearchBean#getCensoredResultCount()
+	 */
+	public int getCensoredResultCount() {
+		getResults();
+		return censoredResults;
+	}
 }
