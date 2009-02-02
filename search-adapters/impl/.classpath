@@ -13,4 +13,5 @@
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-message-api/2.7.0-SNAPSHOT/sakai-message-api-2.7.0-SNAPSHOT.jar"/>
   <classpathentry kind="src" path="/sakai-search-api"/>
   <classpathentry kind="src" path="/sakai-search-util"/>
+  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_17/lib/tools.jar"/>
 </classpath>
