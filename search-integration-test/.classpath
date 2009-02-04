@@ -5,17 +5,17 @@
 	<classpathentry kind="src" path="src/testBundle"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-authz-api/SNAPSHOT/sakai-authz-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-user-api/SNAPSHOT/sakai-user-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-site-api/SNAPSHOT/sakai-site-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-entity-api/SNAPSHOT/sakai-entity-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-search-api/M2/sakai-search-api-M2.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component-api/SNAPSHOT/sakai-component-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-api/SNAPSHOT/sakai-tool-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util-api/SNAPSHOT/sakai-util-api-SNAPSHOT.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util/SNAPSHOT/sakai-util-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-authz-api/sakai-2.5.4/sakai-authz-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-user-api/sakai-2.5.4/sakai-user-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-site-api/sakai-2.5.4/sakai-site-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-entity-api/sakai-2.5.4/sakai-entity-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-search-api/sakai-2.5.4/sakai-search-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component-api/sakai-2.5.4/sakai-component-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-api/sakai-2.5.4/sakai-tool-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util-api/sakai-2.5.4/sakai-util-api-sakai-2.5.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util/sakai-2.5.4/sakai-util-sakai-2.5.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/tomcat/catalina/tomcat-5.5.23/catalina-tomcat-5.5.23.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component/SNAPSHOT/sakai-component-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component/sakai-2.5.4/sakai-component-sakai-2.5.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
