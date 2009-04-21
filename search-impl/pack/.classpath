@@ -25,7 +25,7 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta4/poi-3.5-beta4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-beta4/poi-ooxml-3.5-beta4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-beta4/poi-scratchpad-3.5-beta4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.2/sakai-kernel-util-1.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.7-SNAPSHOT/sakai-kernel-util-1.0.7-SNAPSHOT.jar"/>
   <classpathentry kind="src" path="/sakai-search-impl"/>
   <classpathentry kind="src" path="/sakai-search-model"/>
   <classpathentry kind="src" path="/sakai-search-util"/>
