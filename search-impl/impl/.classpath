@@ -36,11 +36,10 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.2.0/lucene-core-2.2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/ooxml-schemas/1.0/ooxml-schemas-1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/openxml4j/1.0-beta/openxml4j-1.0-beta.jar"/>
   <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta4/poi-3.5-beta4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-beta4/poi-ooxml-3.5-beta4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-beta4/poi-scratchpad-3.5-beta4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta5/poi-3.5-beta5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-beta5/poi-ooxml-3.5-beta5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-beta5/poi-scratchpad-3.5-beta5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1-SNAPSHOT/sakai-component-manager-1.1-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1-SNAPSHOT/sakai-kernel-api-1.1-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1-SNAPSHOT/sakai-kernel-util-1.1-SNAPSHOT.jar"/>
@@ -50,7 +49,7 @@
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/tika/tika/0.2/tika-0.2.jar"/>
-  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_17/lib/tools.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar"/>
 </classpath>
