@@ -1,7 +1,9 @@
 <projectDescription>
-  <name>sakai-search-help</name>
+  <name>sakai-search-api</name>
   <comment/>
-  <projects/>
+  <projects>
+    <project>sakai-event-api</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

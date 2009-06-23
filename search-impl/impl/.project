@@ -1,0 +1,31 @@
+<projectDescription>
+  <name>sakai-search-impl</name>
+  <comment/>
+  <projects>
+    <project>sakai-authz-api</project>
+    <project>sakai-cluster-api</project>
+    <project>sakai-component</project>
+    <project>sakai-component-api</project>
+    <project>sakai-content-api</project>
+    <project>sakai-db-api</project>
+    <project>sakai-entity-api</project>
+    <project>sakai-event-api</project>
+    <project>sakai-message-api</project>
+    <project>sakai-search-api</project>
+    <project>sakai-search-model</project>
+    <project>sakai-search-util</project>
+    <project>sakai-site-api</project>
+    <project>sakai-tool-api</project>
+    <project>sakai-user-api</project>
+    <project>sakai-util</project>
+    <project>sakai-util-api</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
