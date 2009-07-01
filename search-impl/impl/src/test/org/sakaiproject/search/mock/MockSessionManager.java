@@ -21,6 +21,9 @@
 
 package org.sakaiproject.search.mock;
 
+import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
+
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -77,6 +80,14 @@ public class MockSessionManager implements SessionManager
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.tool.api.SessionManager#makeSessionId(org.sakaiproject.tool.api.Session)
+	 */
+	public String makeSessionId(HttpServletRequest req, Principal principal)
+	{
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.tool.api.SessionManager#setCurrentSession(org.sakaiproject.tool.api.Session)
 	 */
