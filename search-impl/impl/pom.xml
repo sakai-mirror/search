@@ -288,6 +288,11 @@
       <version>3.0</version>
       <type>jar</type>
     </dependency>
+    <dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>servlet-api</artifactId>
+		<version>${sakai.servletapi.version}</version>
+	</dependency>
     
   </dependencies>
 </project>
