@@ -21,8 +21,14 @@
 
 package org.sakaiproject.search.indexer.impl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -359,6 +365,7 @@ public class TransactionalIndexWorker implements IndexWorker
 									doc.add(new Field(SearchService.FIELD_CONTENTS,
 											filterNull(content), Field.Store.NO,
 											Field.Index.TOKENIZED, Field.TermVector.YES));
+									saveContentToStore(ref, content, 1);
 								}
 
 								doc.add(new Field(SearchService.FIELD_TITLE,
@@ -514,6 +521,92 @@ public class TransactionalIndexWorker implements IndexWorker
 		}
 		return nprocessed;
 
+	}
+	/**
+	 * Save the digested content to a disc store
+	 * @param ref
+	 * @param content
+	 */
+	private void saveContentToStore(String ref, String content, int version) {
+		String storePath = serverConfigurationService.getString("bodyPath@org.sakaiproject.content.api.ContentHostingService");
+		if (storePath != null ) {
+			storePath += "/searchdigest/";
+			FileOutputStream fileOutput = null;
+			try {
+				if (!new File(storePath).exists())
+					new File(storePath).mkdirs();
+				String exPath = getPath(normalizeRef(ref));
+				String filePath = storePath + exPath;
+				
+				if (!new File(filePath).exists()) {
+					log.info("creatign folder" + filePath);
+					new File(filePath).mkdirs();
+				}
+					
+								
+				log.info("filePath: " + filePath);
+				fileOutput = new FileOutputStream(filePath + "/digest." + version);
+				fileOutput.write(content.getBytes("UTF8"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			finally {
+				try {
+					if(fileOutput != null) fileOutput.close();
+				} catch (IOException e) {
+					log.error("Exception in finally block: "+e);
+				}
+			}
+		}
+
+
+
+	}
+
+	private String getPath(String normalizeRef) {
+		String ret = "";
+		ret = normalizeRef.substring(0, 1) + "/" + normalizeRef.substring(0, 3) + "/" + normalizeRef;
+		return ret;
+	}
+
+	private String normalizeRef(String ref) {
+		MessageDigest md;
+		String ret = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+			md.update(ref.getBytes());
+			// convert the binary md5 hash into hex
+			String md5 = "";
+			byte[] b_arr = md.digest();
+
+			for (int i = 0; i < b_arr.length; i++) {
+				// convert the high nibble
+				byte b = b_arr[i];
+				b >>>= 4;
+				b &= 0x0f; // this clears the top half of the byte
+				md5 += Integer.toHexString(b);
+
+				// convert the low nibble
+				b = b_arr[i];
+				b &= 0x0F;
+				md5 += Integer.toHexString(b);
+			}
+			ret = md5;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} 
+	
+		log.info("got hash of reference of: " + ret);
+		return ret;
 	}
 
 	private String filterPunctuation(String term) {
