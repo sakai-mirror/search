@@ -27,8 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +45,7 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchService;
+import org.sakaiproject.search.api.StoredDigestContentProducer;
 import org.sakaiproject.search.api.rdf.RDFIndexException;
 import org.sakaiproject.search.api.rdf.RDFSearchService;
 import org.sakaiproject.search.indexer.api.IndexUpdateTransaction;
@@ -54,11 +53,11 @@ import org.sakaiproject.search.indexer.api.IndexWorker;
 import org.sakaiproject.search.indexer.api.IndexWorkerDocumentListener;
 import org.sakaiproject.search.indexer.api.IndexWorkerListener;
 import org.sakaiproject.search.indexer.api.NoItemsToIndexException;
-import org.sakaiproject.search.journal.impl.JournalSettings;
 import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.search.transaction.api.IndexTransaction;
 import org.sakaiproject.search.transaction.api.IndexTransactionException;
 import org.sakaiproject.search.transaction.api.TransactionIndexManager;
+import org.sakaiproject.search.util.DigestStorageUtil;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
@@ -240,6 +239,7 @@ public class TransactionalIndexWorker implements IndexWorker
 							.getIndexReader();
 					int ndel = indexReader.deleteDocuments(new Term(
 							SearchService.FIELD_REFERENCE, sbi.getName()));
+					//TODO delete the digest saved to file
 
 					nprocessed++;
 				}
@@ -365,7 +365,11 @@ public class TransactionalIndexWorker implements IndexWorker
 									doc.add(new Field(SearchService.FIELD_CONTENTS,
 											filterNull(content), Field.Store.NO,
 											Field.Index.TOKENIZED, Field.TermVector.YES));
-									saveContentToStore(ref, content, 1);
+									if (sep instanceof StoredDigestContentProducer) {
+										doc.add(new Field(SearchService.FIELD_DIGEST_COUNT,
+												"1", Field.Store.COMPRESS, Field.Index.NO, Field.TermVector.NO));
+										saveContentToStore(ref, content, 1);
+									}
 								}
 
 								doc.add(new Field(SearchService.FIELD_TITLE,
@@ -535,16 +539,16 @@ public class TransactionalIndexWorker implements IndexWorker
 			try {
 				if (!new File(storePath).exists())
 					new File(storePath).mkdirs();
-				String exPath = getPath(normalizeRef(ref));
+				String exPath = DigestStorageUtil.getPath(ref);
 				String filePath = storePath + exPath;
 				
 				if (!new File(filePath).exists()) {
-					log.info("creatign folder" + filePath);
+					log.debug("creating folder" + filePath);
 					new File(filePath).mkdirs();
 				}
 					
 								
-				log.info("filePath: " + filePath);
+				log.debug("filePath: " + filePath);
 				fileOutput = new FileOutputStream(filePath + "/digest." + version);
 				fileOutput.write(content.getBytes("UTF8"));
 			} catch (FileNotFoundException e) {
@@ -570,44 +574,8 @@ public class TransactionalIndexWorker implements IndexWorker
 
 	}
 
-	private String getPath(String normalizeRef) {
-		String ret = "";
-		ret = normalizeRef.substring(0, 1) + "/" + normalizeRef.substring(0, 3) + "/" + normalizeRef;
-		return ret;
-	}
 
-	private String normalizeRef(String ref) {
-		MessageDigest md;
-		String ret = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-			md.update(ref.getBytes());
-			// convert the binary md5 hash into hex
-			String md5 = "";
-			byte[] b_arr = md.digest();
 
-			for (int i = 0; i < b_arr.length; i++) {
-				// convert the high nibble
-				byte b = b_arr[i];
-				b >>>= 4;
-				b &= 0x0f; // this clears the top half of the byte
-				md5 += Integer.toHexString(b);
-
-				// convert the low nibble
-				b = b_arr[i];
-				b &= 0x0F;
-				md5 += Integer.toHexString(b);
-			}
-			ret = md5;
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		} 
-	
-		log.info("got hash of reference of: " + ret);
-		return ret;
-	}
 
 	private String filterPunctuation(String term) {
 		if ( term == null ) {

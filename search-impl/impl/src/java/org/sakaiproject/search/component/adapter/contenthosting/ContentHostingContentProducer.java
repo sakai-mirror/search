@@ -45,10 +45,11 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchService;
+import org.sakaiproject.search.api.StoredDigestContentProducer;
 import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.site.api.SiteService;
 
-public class ContentHostingContentProducer implements EntityContentProducer
+public class ContentHostingContentProducer implements EntityContentProducer, StoredDigestContentProducer
 {
 
 	private static Log log = LogFactory.getLog(ContentHostingContentProducer.class);
