@@ -1,27 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>sakai-search-impl</name>
-	<comment></comment>
-	<projects>
-		<project>sakai-search-api</project>
-		<project>sakai-search-model</project>
-		<project>sakai-search-test-1.5</project>
-		<project>sakai-search-util</project>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>edu.umd.cs.findbugs.plugin.eclipse.findbugsBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
-	</natures>
+  <name>search-impl</name>
+  <comment/>
+  <projects>
+    <project>search-api</project>
+    <project>search-model</project>
+    <project>search-test-1.5</project>
+    <project>search-util</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
 </projectDescription>
