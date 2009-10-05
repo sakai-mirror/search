@@ -1,8 +1,8 @@
 <projectDescription>
-  <name>sakai-search-util</name>
+  <name>search-util</name>
   <comment/>
   <projects>
-    <project>sakai-search-api</project>
+    <project>search-api</project>
   </projects>
   <buildSpec>
     <buildCommand>
