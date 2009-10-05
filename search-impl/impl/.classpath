@@ -53,8 +53,9 @@
   <classpathentry kind="var" path="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar" sourcepath="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar" sourcepath="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.4.1/lucene-core-2.4.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-highlighter/2.4.1/lucene-highlighter-2.4.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.9.0/lucene-core-2.9.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-highlighter/2.9.0/lucene-highlighter-2.9.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-memory/2.9.0/lucene-memory-2.9.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9.jar" sourcepath="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/ooxml-schemas/1.0/ooxml-schemas-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar"/>
