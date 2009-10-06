@@ -37,7 +37,6 @@ import org.sakaiproject.search.indexer.api.IndexWorker;
 import org.sakaiproject.search.indexer.api.IndexWorkerDocumentListener;
 import org.sakaiproject.search.journal.api.ManagementOperation;
 import org.sakaiproject.search.journal.impl.JournalSettings;
-import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
@@ -186,7 +185,6 @@ public class ConcurrentSearchIndexBuilderWorkerImpl implements ManagementOperati
 		}
 
 		log.debug("Run Processing Thread");
-		boolean locked = false;
 
 		int totalDocs = searchService.getPendingDocs();
 
@@ -237,8 +235,7 @@ public class ConcurrentSearchIndexBuilderWorkerImpl implements ManagementOperati
 		log.debug("Activity " + (lastIndexMetric > (10000L * loadFactor)) + " "
 				+ (lastIndexInterval > (60L * loadFactor)) + " " + createIndex);
 
-		if (lastIndexMetric > (10000L * loadFactor)
-				|| lastIndexInterval > (60L * loadFactor))
+		if (true)
 		{
 			log.debug("===" + process + "=============PROCESSING ");
 			if (process)
@@ -247,19 +244,24 @@ public class ConcurrentSearchIndexBuilderWorkerImpl implements ManagementOperati
 				lastIndexRun = System.currentTimeMillis();
 
 				int batchSize = 100;
-				if (totalDocs > 500)
+				
+				if (totalDocs > 100000)
 				{
-					batchSize = 200;
-				}
-				else if (totalDocs > 1000)
-				{
-					batchSize = 500;
+					batchSize = 10000;
 				}
 				else if (totalDocs > 10000)
 				{
 					batchSize = 1000;
 				}
-				Session oldSession = null;
+				else if (totalDocs > 1000)
+				{
+					batchSize = 500;
+				}
+				else if (totalDocs > 500)
+				{
+					batchSize = 200;
+				}
+					
 				securityService.pushAdvisor(new SecurityAdvisor() {
 
 					public SecurityAdvice isAllowed(String userId, String function, String reference)

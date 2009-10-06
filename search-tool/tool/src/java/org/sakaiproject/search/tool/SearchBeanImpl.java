@@ -887,6 +887,13 @@ public class SearchBeanImpl implements SearchBean
 			return MessageFormat.format(Messages.getString("jsp_results_no_perm_plural"), new Object[] { censoredResults });
 	}
 	
+	public boolean linkInline(String toolName) {
+		log.info("checking: " + toolName);
+		if ("forums".equals(toolName))
+			return true;
+		else 
+			return false;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
