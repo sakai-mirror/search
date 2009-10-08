@@ -1,12 +1,7 @@
 <projectDescription>
   <name>search-impl</name>
   <comment/>
-  <projects>
-    <project>search-api</project>
-    <project>search-model</project>
-    <project>search-test-1.5</project>
-    <project>search-util</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
