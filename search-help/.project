@@ -1,6 +1,6 @@
 <projectDescription>
   <name>search-help</name>
-  <comment/>
+  <comment>The Sakai kernel provides core functionality for the Sakai framework</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
