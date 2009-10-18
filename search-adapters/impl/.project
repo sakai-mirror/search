@@ -1,0 +1,16 @@
+<projectDescription>
+  <name>sakai-search-adapters-impl</name>
+  <comment/>
+  <projects>
+    <project>sakai-search-api</project>
+    <project>sakai-search-util</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
