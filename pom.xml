@@ -10,11 +10,11 @@
 	<name>Sakai Search Project</name>
 	<groupId>org.sakaiproject.search</groupId>
 	<artifactId>search</artifactId>
-	<version>1.2-sakai26-beta01</version>
+	<version>1.2-sakai26-beta02</version>
 	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/svn/search/tags/search-1.2-sakai26-beta01</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/svn/search/tags/search-1.2-sakai26-beta01</developerConnection>
-		<url>https://source.sakaiproject.org/svn/search/tags/search-1.2-sakai26-beta01</url>
+		<connection>scm:svn:https://source.sakaiproject.org/svn/search/branches/post-2.6/</connection>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/svn/search/branches/post-2.6/</developerConnection>
+		<url>https://source.sakaiproject.org/svn/search/branches/post-2.6/</url>
 	</scm>
 	<packaging>pom</packaging>
 	<properties>
@@ -59,26 +59,26 @@
 			<dependency>
 				<groupId>org.sakaiproject.search</groupId>
 				<artifactId>search-api</artifactId>
-				<version>1.2-sakai26-beta01</version>
+				<version>1.2-sakai26-beta02</version>
 				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.search</groupId>
 				<artifactId>search-model</artifactId>
-				<version>1.2-sakai26-beta01</version>
+				<version>1.2-sakai26-beta02</version>
 				<type>jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.search</groupId>
 				<artifactId>search-impl</artifactId>
-				<version>1.2-sakai26-beta01</version>
+				<version>1.2-sakai26-beta02</version>
 				<type>jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.search</groupId>
 				<artifactId>search-util</artifactId>
-				<version>1.2-sakai26-beta01</version>
+				<version>1.2-sakai26-beta02</version>
 				<type>jar</type>
 			</dependency>
 			<dependency>
