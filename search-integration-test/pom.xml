@@ -17,7 +17,7 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-test-harness</artifactId>
-  	<version>2.6-SNAPSHOT</version>
+  	<version>2.6.1</version>
     </dependency>
     <dependency>
       <groupId>${sakai.spring.groupId}</groupId>
