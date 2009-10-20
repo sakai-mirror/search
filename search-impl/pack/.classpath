@@ -3,7 +3,11 @@
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/asm/asm/3.1/asm-3.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136.jar"/>
-  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136.jar" sourcepath="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136.jar" sourcepath="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar">
     <attributes>
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-codec/commons-codec/1.4/commons-codec-1.4-javadoc.jar!/" name="javadoc_location"/>
@@ -15,7 +19,11 @@
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar">
     <attributes>
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" name="javadoc_location"/>
@@ -28,16 +36,36 @@
   <classpathentry kind="var" path="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar" sourcepath="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.12/log4j-1.2.12.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.9.0/lucene-core-2.9.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-highlighter/2.9.0/lucene-highlighter-2.9.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-memory/2.9.0/lucene-memory-2.9.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9.jar" sourcepath="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-core/2.9.0/lucene-core-2.9.0.jar" sourcepath="M2_REPO/org/apache/lucene/lucene-core/2.9.0/lucene-core-2.9.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/apache/lucene/lucene-core/2.9.0/lucene-core-2.9.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-highlighter/2.9.0/lucene-highlighter-2.9.0.jar" sourcepath="M2_REPO/org/apache/lucene/lucene-highlighter/2.9.0/lucene-highlighter-2.9.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/apache/lucene/lucene-highlighter/2.9.0/lucene-highlighter-2.9.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/lucene/lucene-memory/2.9.0/lucene-memory-2.9.0.jar" sourcepath="M2_REPO/org/apache/lucene/lucene-memory/2.9.0/lucene-memory-2.9.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/apache/lucene/lucene-memory/2.9.0/lucene-memory-2.9.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9.jar" sourcepath="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/ooxml-schemas/1.0/ooxml-schemas-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-FINAL/poi-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-FINAL/poi-ooxml-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-FINAL/poi-scratchpad-3.5-FINAL.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="src" path="/search-impl"/>
   <classpathentry kind="src" path="/search-model"/>
   <classpathentry kind="src" path="/search-util"/>

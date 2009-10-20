@@ -1,6 +1,6 @@
 <classpath>
   <classpathentry kind="src" path="src/test" output="target/test-classes" including="**/*.java"/>
-  <classpathentry kind="src" path="src/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/java"/>
   <classpathentry kind="src" path="src/bundle" including="**/*.*" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar"/>
@@ -20,16 +20,36 @@
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/jmock/jmock/1.1.0/jmock-1.1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/jmock/jmock-cglib/1.1.0/jmock-cglib-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jmock/jmock/1.1.0/jmock-1.1.0.jar" sourcepath="M2_REPO/jmock/jmock/1.1.0/jmock-1.1.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/jmock/jmock/1.1.0/jmock-1.1.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/jmock/jmock-cglib/1.1.0/jmock-cglib-1.1.0.jar" sourcepath="M2_REPO/jmock/jmock-cglib/1.1.0/jmock-cglib-1.1.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/jmock/jmock-cglib/1.1.0/jmock-cglib-1.1.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta03/sakai-component-manager-1.1.0-beta03.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta03/sakai-kernel-api-1.1.0-beta03.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta03/sakai-component-manager-1.1.0-beta03.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta03/sakai-component-manager-1.1.0-beta03-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta03/sakai-component-manager-1.1.0-beta03-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta03/sakai-kernel-api-1.1.0-beta03.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta03/sakai-kernel-api-1.1.0-beta03-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta03/sakai-kernel-api-1.1.0-beta03-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="src" path="/search-api"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01.jar" sourcepath="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01-sources.jar"/>
-  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_20/lib/tools.jar"/>
-  <classpathentry kind="var" path="M2_REPO/velocity/velocity/1.4/velocity-1.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/velocity/velocity-dep/1.4/velocity-dep-1.4.jar"/>
+  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_19/lib/tools.jar"/>
+  <classpathentry kind="var" path="M2_REPO/velocity/velocity/1.4/velocity-1.4.jar" sourcepath="M2_REPO/velocity/velocity/1.4/velocity-1.4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/velocity/velocity-dep/1.4/velocity-dep-1.4.jar" sourcepath="M2_REPO/velocity/velocity-dep/1.4/velocity-dep-1.4-sources.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
