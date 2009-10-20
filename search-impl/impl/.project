@@ -1,6 +1,6 @@
 <projectDescription>
   <name>search-impl</name>
-  <comment>The Sakai kernel provides core functionality for the Sakai framework</comment>
+  <comment/>
   <projects>
     <project>search-api</project>
     <project>search-model</project>

@@ -1,6 +1,6 @@
 <projectDescription>
   <name>search-util</name>
-  <comment>The Sakai kernel provides core functionality for the Sakai framework</comment>
+  <comment/>
   <projects>
     <project>search-api</project>
   </projects>
