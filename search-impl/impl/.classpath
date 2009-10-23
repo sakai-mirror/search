@@ -1,6 +1,6 @@
 <classpath>
-  <classpathentry kind="src" path="src/test" output="target/test-classes"/>
-  <classpathentry kind="src" path="src/java"/>
+  <classpathentry kind="src" path="src/test" output="target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/bundle" including="**/*.*" excluding="**/*.java"/>
   <classpathentry kind="src" path="src/sql" including="**/*.sql" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
@@ -121,7 +121,7 @@
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01.jar" sourcepath="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/tika/tika/0.2/tika-0.2.jar"/>
-  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_19/lib/tools.jar"/>
+  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_20/lib/tools.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar" sourcepath="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar"/>
