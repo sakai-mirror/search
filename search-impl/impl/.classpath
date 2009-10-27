@@ -7,7 +7,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.0.1B/jta-1.0.1B.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar" sourcepath="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/asm/asm/3.1/asm-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/asm/asm/1.5.3/asm-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/asm/asm-attrs/1.5.3/asm-attrs-1.5.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/backport-util-concurrent/backport-util-concurrent/3.0/backport-util-concurrent-3.0.jar" sourcepath="M2_REPO/backport-util-concurrent/backport-util-concurrent/3.0/backport-util-concurrent-3.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136.jar"/>
@@ -29,11 +29,6 @@
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/commons-dbcp/commons-dbcp/1.2.2/commons-dbcp-1.2.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.jar" sourcepath="M2_REPO/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar" sourcepath="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4-sources.jar">
     <attributes>
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4-javadoc.jar!/" name="javadoc_location"/>
@@ -63,7 +58,6 @@
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/hibernate/hibernate/3.2.7.ga/hibernate-3.2.7.ga-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.8/icu4j-3.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/jempbox/jempbox/0.2.0/jempbox-0.2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/sf/jsr107cache/jsr107cache/1.0/jsr107cache-1.0.jar" sourcepath="M2_REPO/net/sf/jsr107cache/jsr107cache/1.0/jsr107cache-1.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar" sourcepath="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev-sources.jar"/>
@@ -89,11 +83,6 @@
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/apache/lucene/lucene-spellchecker/2.9.0/lucene-spellchecker-2.9.0-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9.jar" sourcepath="M2_REPO/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/net/sourceforge/nekohtml/nekohtml/1.9.9/nekohtml-1.9.9-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/ooxml-schemas/1.0/ooxml-schemas-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-FINAL/poi-3.5-FINAL.jar"/>
@@ -114,15 +103,19 @@
       <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-kernel-util/1.1.0-beta03/sakai-kernel-util-1.1.0-beta03-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="src" path="/search-api"/>
-  <classpathentry kind="src" path="/search-model"/>
-  <classpathentry kind="src" path="/search-test-1.5"/>
-  <classpathentry kind="src" path="/search-util"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator.jar" sourcepath="M2_REPO/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/search/search-api/1.2-beta02-SNAPSHOT/search-api-1.2-beta02-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/search/search-model/1.2-beta02-SNAPSHOT/search-model-1.2-beta02-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/search/search-test-1.5/1.2-beta02-SNAPSHOT/search-test-1.5-1.2-beta02-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/search/search-util/1.2-beta02-SNAPSHOT/search-util-1.2-beta02-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01.jar" sourcepath="M2_REPO/org/springframework/spring/2.5.6.SEC01/spring-2.5.6.SEC01-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/tika/tika/0.2/tika-0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/tika/tika-app/0.4/tika-app-0.4.jar"/>
   <classpathentry kind="lib" path="/usr/java/jdk1.5.0_20/lib/tools.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar" sourcepath="M2_REPO/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/xmlbeans/xmlbeans/2.3.0/xmlbeans-2.3.0.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
