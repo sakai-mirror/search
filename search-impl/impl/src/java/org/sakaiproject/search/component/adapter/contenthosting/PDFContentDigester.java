@@ -48,25 +48,22 @@ public class PDFContentDigester extends BaseContentDigester
 		if (contentResource == null) {
 			throw new RuntimeException("Null contentResource passed to getContent");
 		}
-		if ( contentResource != null && 
-				contentResource.getContentLength() > maxDigestSize  ) {
-			throw new RuntimeException("Attempt to get too much content as a string on "+contentResource.getReference());
-		}
 
 		InputStream contentStream = null;
 		PDFParser parser = null;
+		PDDocument pddoc = null;
 		try {
 			contentStream = contentResource.streamContent();
 			parser = new PDFParser(new BufferedInputStream(contentStream));
 			parser.parse();
-			PDDocument pddoc = parser.getPDDocument();
-
-			PDFTextStripper stripper = new PDFTextStripper();
-			stripper.setLineSeparator("\n");		
-			CharArrayWriter cw = new CharArrayWriter();
-			stripper.writeText(pddoc, cw);
-			pddoc.close();
-			return SearchUtils.appendCleanString(cw.toCharArray(),null).toString();
+			pddoc = parser.getPDDocument();
+			if (pddoc != null) {
+				PDFTextStripper stripper = new PDFTextStripper();
+				stripper.setLineSeparator("\n");		
+				CharArrayWriter cw = new CharArrayWriter();
+				stripper.writeText(pddoc, cw);
+				return SearchUtils.appendCleanString(cw.toCharArray(),null).toString();
+			}
 		} catch (ServerOverloadException e) {
 			String eMessage = e.getMessage();
 			if (eMessage == null) {
@@ -76,8 +73,9 @@ public class PDFContentDigester extends BaseContentDigester
 		}
 		catch (IOException e) {
 			try {
-				PDDocument pddoc = parser.getPDDocument();
-				pddoc.close();
+				if (pddoc != null) {
+					pddoc.close();
+				}
 			} catch ( Exception ex ) {
 				log.debug(ex);
 			}
@@ -89,6 +87,15 @@ public class PDFContentDigester extends BaseContentDigester
 		}
 		finally
 		{
+			if (pddoc != null) {
+				try {
+					pddoc.close();
+				} 
+				catch (IOException e) {
+
+				}
+			}
+			
 			if (contentStream != null)
 			{
 				try
@@ -101,6 +108,7 @@ public class PDFContentDigester extends BaseContentDigester
 				}
 			}
 		}
+		return null;
 	}
 	public Reader getContentReader(ContentResource contentResource)
 	{
