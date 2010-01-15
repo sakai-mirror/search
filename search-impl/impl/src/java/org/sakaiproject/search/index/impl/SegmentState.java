@@ -104,7 +104,10 @@ public class SegmentState
 				fw.close();
 			}
 		}
-		tmpFile.renameTo(checksumFile);
+		if (!tmpFile.renameTo(checksumFile))
+		{
+			log.warn("unable to rename " + tmpFile.getPath() + " to " + checksumFile.getPath());
+		}
 	}
 
 	/**
