@@ -691,7 +691,6 @@ public class SearchBeanImpl implements SearchBean
 					{
 						cssInd = "2";
 					}
-					final String cssI = cssInd;
 					pages.add(new SearchPage()
 					{
 
@@ -703,11 +702,6 @@ public class SearchBeanImpl implements SearchBean
 						public String getUrl()
 						{
 							return FormattedText.escapeHtml(searchURL, false);
-						}
-
-						public String getCssIndex()
-						{
-							return cssI;
 						}
 
 					});
