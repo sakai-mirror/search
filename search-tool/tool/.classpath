@@ -1,0 +1,26 @@
+<classpath>
+  <classpathentry kind="src" path="src/test" output="m2-target/test-classes" including="**/*.java"/>
+  <classpathentry kind="src" path="src/java"/>
+  <classpathentry kind="src" path="src/bundle" including="**/*.*" excluding="**/*.java"/>
+  <classpathentry kind="output" path="m2-target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/cglib/cglib-full/2.0.2/cglib-full-2.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jmock/jmock/1.1.0/jmock-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jmock/jmock-cglib/1.1.0/jmock-cglib-1.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="src" path="/sakai-authz-api"/>
+  <classpathentry kind="src" path="/sakai-component"/>
+  <classpathentry kind="src" path="/sakai-component-api"/>
+  <classpathentry kind="src" path="/sakai-entity-api"/>
+  <classpathentry kind="src" path="/sakai-search-api"/>
+  <classpathentry kind="src" path="/sakai-site-api"/>
+  <classpathentry kind="src" path="/sakai-tool-api"/>
+  <classpathentry kind="src" path="/sakai-util"/>
+  <classpathentry kind="src" path="/sakai-util-api"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/velocity/velocity/1.4/velocity-1.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/velocity/velocity-dep/1.4/velocity-dep-1.4.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>

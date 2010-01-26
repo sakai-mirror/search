@@ -1,0 +1,23 @@
+<classpath>
+  <classpathentry kind="src" path="src/bundle" including="**/*.*" excluding="**/*.java"/>
+  <classpathentry kind="output" path="m2-target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcmail-jdk14/136/bcmail-jdk14-136.jar"/>
+  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk14/136/bcprov-jdk14-136.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.3/commons-codec-1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/fontbox/fontbox/0.1.0/fontbox-0.1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jempbox/jempbox/0.2.0/jempbox-0.2.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/lucene/lucene-core/1.9.1/lucene-core-1.9.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.7.3/pdfbox-0.7.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/poi/poi/3.0-alpha3-20070301/poi-3.0-alpha3-20070301.jar"/>
+  <classpathentry kind="var" path="M2_REPO/poi/poi-scratchpad/3.0-alpha3-20070301/poi-scratchpad-3.0-alpha3-20070301.jar"/>
+  <classpathentry kind="src" path="/sakai-search-impl"/>
+  <classpathentry kind="src" path="/sakai-search-model"/>
+  <classpathentry kind="src" path="/sakai-search-util"/>
+  <classpathentry kind="src" path="/sakai-util"/>
+  <classpathentry kind="var" path="M2_REPO/org/textmining/tm-extractors/0.4/tm-extractors-0.4.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>
