@@ -23,7 +23,7 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-FINAL/poi-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-FINAL/poi-ooxml-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-FINAL/poi-scratchpad-3.5-FINAL.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.12/sakai-kernel-util-1.0.12.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.13/sakai-kernel-util-1.0.13.jar"/>
   <classpathentry kind="src" path="/sakai-search-impl"/>
   <classpathentry kind="src" path="/sakai-search-model"/>
   <classpathentry kind="src" path="/sakai-search-util"/>
