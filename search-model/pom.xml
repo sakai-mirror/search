@@ -4,7 +4,7 @@
   <parent>
     <artifactId>search</artifactId>
     <groupId>org.sakaiproject.search</groupId>
-    <version>1.2.0-rc04-SNAPSHOT</version>
+    <version>1.2.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>search-model</name>
