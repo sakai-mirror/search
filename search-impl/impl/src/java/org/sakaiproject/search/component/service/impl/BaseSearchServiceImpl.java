@@ -61,6 +61,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.event.api.NotificationEdit;
 import org.sakaiproject.event.api.NotificationService;
+import org.sakaiproject.search.api.InvalidSearchQueryException;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchList;
 import org.sakaiproject.search.api.SearchResult;
@@ -315,13 +316,13 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	 * 
 	 * @param indexFilter
 	 */
-	public SearchList search(String searchTerms, List<String> contexts, int start, int end)
+	public SearchList search(String searchTerms, List<String> contexts, int start, int end) throws InvalidSearchQueryException
 	{
 		return search(searchTerms, contexts, start, end, defaultFilter, defaultSorter);
 	}
 
 	public SearchList search(String searchTerms, List<String> contexts, int start, int end,
-			String filterName, String sorterName)
+			String filterName, String sorterName) throws InvalidSearchQueryException
 	{
 		try
 		{
@@ -441,7 +442,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 		}
 		catch (ParseException e)
 		{
-			throw new RuntimeException("Failed to parse Query ", e); //$NON-NLS-1$
+			throw new InvalidSearchQueryException("Failed to parse Query ", e); //$NON-NLS-1$
 		}
 		catch (IOException e)
 		{
