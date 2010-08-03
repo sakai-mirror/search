@@ -4,6 +4,7 @@
   <projects>
     <project>sakai-search-api</project>
     <project>sakai-search-model</project>
+    <project>sakai-search-test-1.6</project>
     <project>sakai-search-util</project>
   </projects>
   <buildSpec>

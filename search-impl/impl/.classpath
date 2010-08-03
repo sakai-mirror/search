@@ -40,11 +40,24 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-FINAL/poi-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-ooxml/3.5-FINAL/poi-ooxml-3.5-FINAL.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi-scratchpad/3.5-FINAL/poi-scratchpad-3.5-FINAL.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.0.12/sakai-component-manager-1.0.12.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0.12/sakai-kernel-api-1.0.12.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.12/sakai-kernel-util-1.0.12.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.0.16/sakai-component-manager-1.0.16.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.0.16/sakai-component-manager-1.0.16-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/arwhyte/.m2/repository/org/sakaiproject/kernel/sakai-component-manager/1.0.16/sakai-component-manager-1.0.16-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0.16/sakai-kernel-api-1.0.16.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0.16/sakai-kernel-api-1.0.16-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/arwhyte/.m2/repository/org/sakaiproject/kernel/sakai-kernel-api/1.0.16/sakai-kernel-api-1.0.16-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.16/sakai-kernel-util-1.0.16.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.16/sakai-kernel-util-1.0.16-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/arwhyte/.m2/repository/org/sakaiproject/kernel/sakai-kernel-util/1.0.16/sakai-kernel-util-1.0.16-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="src" path="/sakai-search-api"/>
   <classpathentry kind="src" path="/sakai-search-model"/>
+  <classpathentry kind="src" path="/sakai-search-test-1.6"/>
   <classpathentry kind="src" path="/sakai-search-util"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
