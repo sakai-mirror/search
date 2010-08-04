@@ -39,16 +39,21 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.Scorer;
 import org.apache.lucene.search.highlight.SimpleHTMLEncoder;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.search.api.EntityContentProducer;
+import org.sakaiproject.search.api.PortalUrlEnabledProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchResult;
 import org.sakaiproject.search.api.SearchService;
+import org.sakaiproject.search.api.StoredDigestContentProducer;
 import org.sakaiproject.search.api.TermFrequency;
 import org.sakaiproject.search.component.Messages;
+import org.sakaiproject.search.util.DigestStorageUtil;
 
 /**
  * @author ieb
@@ -74,10 +79,12 @@ public class SearchResultImpl implements SearchResult
 
 	private SearchService searchService;
 
+	private String url;
+
 	public SearchResultImpl(Hits h, int index, Query query, Analyzer analyzer,
-			 SearchIndexBuilder searchIndexBuilder,
+			SearchIndexBuilder searchIndexBuilder,
 			SearchService searchService) throws IOException
-	{
+			{
 		this.h = h;
 		this.index = index;
 		this.doc = h.doc(index);
@@ -85,7 +92,7 @@ public class SearchResultImpl implements SearchResult
 		this.analyzer = analyzer;
 		this.searchIndexBuilder = searchIndexBuilder;
 		this.searchService = searchService;
-	}
+			}
 
 	public float getScore()
 	{
@@ -146,7 +153,9 @@ public class SearchResultImpl implements SearchResult
 
 	public String getUrl()
 	{
-		return doc.get(SearchService.FIELD_URL);
+		if (url == null)
+			url = doc.get(SearchService.FIELD_URL);
+		return url;
 	}
 
 	public String getTitle()
@@ -176,20 +185,43 @@ public class SearchResultImpl implements SearchResult
 			// fetch it from the EntityContentProducer
 
 			String[] references = doc.getValues(SearchService.FIELD_REFERENCE);
-
+			DigestStorageUtil digestStorageUtil = new DigestStorageUtil(searchService);
 			if (references != null && references.length > 0)
 			{
 
 				for (int i = 0; i < references.length; i++)
 				{
 					EntityContentProducer sep = searchIndexBuilder
-							.newEntityContentProducer(references[i]);
+					.newEntityContentProducer(references[i]);
 					if ( sep != null ) {
-					    sb.append(sep.getContent(references[i]));
+						//does this ecp store on the FS?
+						if (sep instanceof StoredDigestContentProducer) {
+							String digestCount = doc.get(SearchService.FIELD_DIGEST_COUNT);
+							if (digestCount == null) {
+								digestCount = "1";
+							}
+							log.debug("This file possibly has FS digests with index of " + digestCount);
+							StringBuilder sb1 = digestStorageUtil.getFileContents(doc.get(SearchService.FIELD_REFERENCE), digestCount);
+							if (sb1.length() > 0) {
+								sb.append(sb1);
+
+							} else {
+								String digest = sep.getContent(references[i]);
+								sb.append(digest);
+								//we need to save this
+								digestStorageUtil.saveContentToStore(doc.get(SearchService.FIELD_REFERENCE), sb.toString(), 1);
+
+							}
+
+
+
+						} else {
+							sb.append(sep.getContent(references[i]));
+
+						}
 					}
 				}
 			}
-
 			String text = sb.toString();
 			TokenStream tokenStream = analyzer.tokenStream(
 					SearchService.FIELD_CONTENTS, new StringReader(text));
@@ -198,6 +230,8 @@ public class SearchResultImpl implements SearchResult
 		catch (IOException e)
 		{
 			return Messages.getString("SearchResultImpl.2") + e.getMessage(); //$NON-NLS-1$
+		} catch (InvalidTokenOffsetsException e) {
+			return Messages.getString("SearchResultResponseImpl.11") + e.getMessage(); 
 		}
 	}
 
@@ -237,6 +271,26 @@ public class SearchResultImpl implements SearchResult
 	}
 
 	public boolean isCensored() {
+		return false;
+	}
+
+
+	public void setUrl(String newUrl) {
+		url = newUrl;
+
+	}
+
+	public boolean hasPortalUrl() {
+		log.debug("hasPortalUrl(" + getReference());
+		EntityContentProducer sep = searchIndexBuilder
+		.newEntityContentProducer(getReference());
+		if (sep != null) {
+			log.debug("got ECP for " + getReference());
+			if (PortalUrlEnabledProducer.class.isAssignableFrom(sep.getClass())) {
+				log.debug("has portalURL!");
+				return true;
+			}
+		}
 		return false;
 	}
 

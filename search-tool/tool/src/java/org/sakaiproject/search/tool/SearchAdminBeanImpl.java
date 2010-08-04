@@ -105,8 +105,6 @@ public class SearchAdminBeanImpl implements SearchAdminBean
 	
 	private SearchService searchService = null;
 
-	private SiteService siteService = null;
-
 	private String internCommand = null;
 
 	private String siteId;
@@ -148,7 +146,6 @@ public class SearchAdminBeanImpl implements SearchAdminBean
 			throw new PermissionException(userName, "site.update", siteCheck);
 		}
 		this.searchService = searchService;
-		this.siteService = siteService;
 
 		// process any commands
 		String command = request.getParameter(COMMAND);
@@ -513,7 +510,6 @@ public class SearchAdminBeanImpl implements SearchAdminBean
 	{
 		List<Segment> segments = new ArrayList<Segment>();
 		Object[] segmentInfo = searchService.getSegmentInfo().toArray();
-		StringBuilder sb = new StringBuilder();
 		for ( Object ra : segmentInfo ) {
 			// name, size, lastup
 			final Object[] r  =(Object[]) ra;
@@ -642,7 +638,6 @@ public class SearchAdminBeanImpl implements SearchAdminBean
 	{
 		List<WorkerThread> workers = new ArrayList<WorkerThread>();
 		SearchStatus ss = searchService.getSearchStatus();
-		StringBuilder sb = new StringBuilder();
 		List l = ss.getWorkerNodes();
 		for ( Iterator i = l.iterator(); i.hasNext(); ) {
 			final Object[] w = (Object[]) i.next();

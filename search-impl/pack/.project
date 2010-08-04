@@ -1,10 +1,10 @@
 <projectDescription>
-  <name>sakai-search-pack</name>
+  <name>search-pack</name>
   <comment/>
   <projects>
-    <project>sakai-search-impl</project>
-    <project>sakai-search-model</project>
-    <project>sakai-search-util</project>
+    <project>search-impl</project>
+    <project>search-model</project>
+    <project>search-util</project>
   </projects>
   <buildSpec>
     <buildCommand>

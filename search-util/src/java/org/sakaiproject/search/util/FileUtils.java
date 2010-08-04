@@ -81,10 +81,11 @@ public class FileUtils
 		{
 			public void doFile(File file) throws IOException
 			{
-				file.delete();
-				if (file.exists())
-				{
-					throw new IOException("Failed to delete  " + file.getPath());
+				if (file != null) {
+					if (!file.delete() && file.exists())
+					{
+						throw new IOException("Failed to delete  " + file.getPath());
+					}
 				}
 			}
 
@@ -101,7 +102,7 @@ public class FileUtils
 	public static void recurse(File f, RecurseAction action) throws IOException
 	{
 		action.doBeforeFile(f);
-		if (f.isDirectory())
+		if (f !=null && f.isDirectory())
 		{
 			File[] files = f.listFiles();
 			if (files != null)
@@ -273,7 +274,13 @@ public class FileUtils
 				File f = new File(destination, zipEntry.getName());
 				if (log.isDebugEnabled())
 					log.debug("         Unpack " + f.getAbsolutePath());
-				f.getParentFile().mkdirs();
+				if (!f.getParentFile().exists())
+				{
+					if (!f.getParentFile().mkdirs())
+					{
+						log.warn("unpack(): Failed to create parent folder: " + f.getParentFile().getPath());
+					}
+				}
 
 				fout = new FileOutputStream(f);
 				int len;
@@ -283,7 +290,10 @@ public class FileUtils
 				}
 				zin.closeEntry();
 				fout.close();
-				f.setLastModified(ts);
+				if (!f.setLastModified(ts))
+				{
+					log.warn("upack(): failes to set modified date on " + f.getPath());
+				}
 			}
 		}
 		finally
@@ -416,9 +426,14 @@ public class FileUtils
 	 */
 	public static void createMarkerFile(File file) throws IOException
 	{
-		FileWriter fw = new FileWriter(file);
-		fw.write("File Touched at "+(new Date()));
-		fw.close();
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(file);
+			fw.write("File Touched at "+(new Date()));
+		}
+		finally {
+			fw.close();
+		}
 		
 	}
 

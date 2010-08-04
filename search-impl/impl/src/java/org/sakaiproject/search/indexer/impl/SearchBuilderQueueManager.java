@@ -37,6 +37,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.db.cover.SqlService;
+import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.indexer.api.IndexUpdateTransactionListener;
@@ -120,7 +121,7 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 	 */
 	public void prepare(IndexTransaction transaction)
 	{
-		// At the moment I dont think that we need to do anything here, we could
+		// At the moment I dot think that we need to do anything here, we could
 		// brign the work of the
 		// commit phase in here leaving the final commit to the last method,
 		// but that would mean taking the connection over more than one cycle.
@@ -307,8 +308,8 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 				else
 				{
 					// get all site masters and perform the required action.
-					List siteMasters = getSiteMasterItems(connection);
-					for (Iterator i = siteMasters.iterator(); i.hasNext();)
+					List<SearchBuilderItem> siteMasters = getSiteMasterItems(connection);
+					for (Iterator<SearchBuilderItem> i = siteMasters.iterator(); i.hasNext();)
 					{
 						SearchBuilderItem siteMaster = (SearchBuilderItem) i.next();
 						try
@@ -703,11 +704,6 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 		}
 	}
 
-	private Integer getMasterAction(Connection connection) throws SQLException
-	{
-		return getMasterAction(getMasterItem(connection));
-	}
-
 	/**
 	 * get the master action of known master item
 	 * 
@@ -788,57 +784,62 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 			connection.commit();
 			log
 					.debug("ADD ALL RECORDS ==========================================================="); //$NON-NLS-1$
-			long lastupdate = System.currentTimeMillis();
-			List<String> contextList = new ArrayList<String>();
-			if (SearchBuilderItem.GLOBAL_CONTEXT.equals(controlItem.getContext()))
+			
+			List<String> contextList = getAllContentexts(controlItem);
+			
+			//These will never change
+			List<EntityContentProducer> contentProducers = searchIndexBuilder.getContentProducers();
+			
+			//how long and how often should we sleep?
+			long sleepTime = 1000*60;
+			long sleepInterval = 1000;
+			long itemCount = 0;
+			long itemCountTotal = 0;
+			long itemSleepInterval = 100000;
+			long count = 0;
+			long totalCount = 0;
+			//Iterate through each site
+			for (Iterator<String> c = contextList.iterator(); c.hasNext();)
 			{
-
-				for (Iterator i = SiteService.getSites(SelectionType.ANY, null, null,
-						null, SortType.NONE, null).iterator(); i.hasNext();)
-				{
-					Site s = (Site) i.next();
-					if (!SiteService.isSpecialSite(s.getId())
-							|| SiteService.isUserSite(s.getId()))
-					{
-						if (searchIndexBuilder.isOnlyIndexSearchToolSites())
-						{
-							ToolConfiguration t = s.getToolForCommonId("sakai.search"); //$NON-NLS-1$
-							if (t != null)
-							{
-								contextList.add(s.getId());
-							}
-						}
-						else
-						{
-							contextList.add(s.getId());
-						}
+				if (count == sleepInterval) {
+					log.info("sleeping to stop GC craziness");
+					log.info("done " + totalCount + "/" + contextList.size());
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					count = 0;
+					totalCount ++;
+				} else {
+					count ++;
+					totalCount ++;
+					
 				}
-			}
-			else
-			{
-				contextList.add(controlItem.getContext());
-			}
-			for (Iterator c = contextList.iterator(); c.hasNext();)
-			{
+				
 				String siteContext = (String) c.next();
-				log.info("Rebuild for " + siteContext); //$NON-NLS-1$
-				for (Iterator i = searchIndexBuilder.getContentProducers().iterator(); i
+				log.info("Rebuild for " + siteContext + " (" + totalCount + "/" + contextList.size() +")"); //$NON-NLS-1$
+				
+				for (Iterator<EntityContentProducer> i = contentProducers.iterator(); i
 						.hasNext();)
 				{
 					EntityContentProducer ecp = (EntityContentProducer) i.next();
 
-					Iterator contentIterator = null;
+					Iterator<String> contentIterator = null;
 					try
 					{
 						contentIterator = ecp.getSiteContentIterator(siteContext);
-						log.debug("Using ECP " + ecp); //$NON-NLS-1$
+						if (log.isDebugEnabled())
+							log.debug("Using ECP " + ecp); //$NON-NLS-1$
 
 						int added = 0;
 						for (; contentIterator.hasNext();)
 						{
 							String resourceName = (String) contentIterator.next();
-							log.debug("Checking " + resourceName); //$NON-NLS-1$
+							if (log.isDebugEnabled())
+								log.debug("Checking " + resourceName); //$NON-NLS-1$
+							
 							if (resourceName == null || resourceName.length() > 255)
 							{
 								log
@@ -877,9 +878,18 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 								log.error("Failed to update " + sqlex.getMessage()); //$NON-NLS-1$
 							}
 							connection.commit();
+							if (itemCount == itemSleepInterval) {
+								log.info("procced a block of " + itemSleepInterval + " sleeping to allow gc total items: " + itemCountTotal);
+								Thread.sleep(sleepTime);
+								itemCount = 0;
+							} else {
+								itemCount++;
+								itemCountTotal++;
+							}
 
 						}
-						log.debug(" Added " + added); //$NON-NLS-1$
+						if (log.isDebugEnabled())
+							log.debug(" Added " + added); //$NON-NLS-1$
 					}
 					catch (Exception ex)
 					{
@@ -904,6 +914,52 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 			}
 		}
 
+	}
+
+	private List<String> getAllContentexts(SearchBuilderItem controlItem) {
+		List<String> contextList = new ArrayList<String>();
+		if (SearchBuilderItem.GLOBAL_CONTEXT.equals(controlItem.getContext()))
+		{
+			int first = 1;
+			int increment = 1000;
+			int last = increment;
+			boolean doAnother = true;
+			while (doAnother) {
+				List<Site> sites = SiteService.getSites(SelectionType.ANY, null, null,
+						null, SortType.NONE, new PagingPosition(first, last));
+				for (Iterator<Site> i = sites.iterator(); i.hasNext();)
+				{
+					Site s = (Site) i.next();
+					if (!SiteService.isSpecialSite(s.getId())
+							|| SiteService.isUserSite(s.getId()))
+					{
+						if (searchIndexBuilder.isOnlyIndexSearchToolSites())
+						{
+							ToolConfiguration t = s.getToolForCommonId("sakai.search"); //$NON-NLS-1$
+							if (t != null)
+							{
+								contextList.add(s.getId());
+							}
+						}
+						else
+						{
+							contextList.add(s.getId());
+						}
+					}
+				}
+				if (sites.size() < increment) {
+					doAnother = false;
+				} else {
+					first = last +1;
+					last = last + increment;
+				}
+			}
+		}
+		else
+		{
+			contextList.add(controlItem.getContext());
+		}
+		return contextList;
 	}
 
 	private void refreshIndex(Connection connection, SearchBuilderItem controlItem)

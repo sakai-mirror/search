@@ -1045,7 +1045,9 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 		{
 			try
 			{
-				pst.close();
+				if (pst != null) {
+					pst.close();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1147,11 +1149,6 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 		}
 		return null;
 
-	}
-
-	private Integer getMasterAction(Connection connection) throws SQLException
-	{
-		return getMasterAction(getMasterItem(connection));
 	}
 
 	/**

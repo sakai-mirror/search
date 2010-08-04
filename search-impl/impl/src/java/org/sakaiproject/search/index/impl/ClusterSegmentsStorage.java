@@ -1,24 +1,3 @@
-/**********************************************************************************
- * $URL$
- * $Id$
- ***********************************************************************************
- *
- * Copyright (c) 2006, 2007, 2008 The Sakai Foundation
- *
- * Licensed under the Educational Community License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.osedu.org/licenses/ECL-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- **********************************************************************************/
-
 package org.sakaiproject.search.index.impl;
 
 import java.io.ByteArrayInputStream;
@@ -104,7 +83,10 @@ public class ClusterSegmentsStorage
 				File f = new File(unpackBase, zipEntry.getName());
 				if (log.isDebugEnabled())
 					log.debug("         Unpack " + f.getAbsolutePath());
-				f.getParentFile().mkdirs();
+				if (!f.getParentFile().mkdirs())
+				{
+					log.warn("unpackSegment: failed to delete parent folders");
+				}
 
 				fout = new FileOutputStream(f);
 				int len;
@@ -114,7 +96,10 @@ public class ClusterSegmentsStorage
 				}
 				zin.closeEntry();
 				fout.close();
-				f.setLastModified(ts);
+				if (!f.setLastModified(ts))
+				{
+					log.warn("unpackSegments: failed to setlastmodified");
+				}
 			}
 
 			if (locationExists)
@@ -185,7 +170,10 @@ public class ClusterSegmentsStorage
 			}
 			if (moved.get(f.getPath()) == null)
 			{
-				f.delete();
+				if (!f.delete())
+				{
+					log.warn("Failed to delte file: " + f.getPath());
+				}
 				log.debug("          deleted " + f.getPath());
 			}
 		}
@@ -193,7 +181,10 @@ public class ClusterSegmentsStorage
 		{
 			if (moved.get(f.getPath()) == null)
 			{
-				f.delete();
+				if (!f.delete())
+				{
+					log.warn("Failed to delte file: " + f.getPath());
+				}
 				log.debug("          deleted " + f.getPath());
 			}
 		}
@@ -218,17 +209,26 @@ public class ClusterSegmentsStorage
 		{
 			if (dest.exists())
 			{
-				dest.delete();
+				if (!dest.delete())
+				{
+					log.warn("Failed to delte file: " + dest.getPath());
+				}
 			}
 			else
 			{
 				File p = dest.getParentFile();
 				if (!p.exists())
 				{
-					p.mkdirs();
+					if (!p.mkdirs())
+					{
+						log.warn("Failed to create directories in " + p.getPath());
+					}
 				}
 			}
-			src.renameTo(dest);
+			if (!src.renameTo(dest))
+			{
+				log.warn("failed to rename: " + src.getPath() + " to: " + dest.getPath());
+			}
 			log.debug("          renamed " + src.getPath() + " to " + dest.getPath());
 		}
 		moved.put(dest.getPath(), dest);
@@ -246,13 +246,25 @@ public class ClusterSegmentsStorage
 			{
 				deleteAll(fs[i]);
 			}
-			f.delete();
-			log.debug("          deleted " + f.getPath());
+			if (!f.delete())
+			{
+				log.warn("deleteAll(): failed to delete " + f.getPath());
+			} 
+			else 
+			{
+				log.debug("          deleted " + f.getPath());
+			}
 		}
 		else
 		{
-			f.delete();
-			log.debug("          deleted " + f.getPath());
+			if (!f.delete())
+			{
+				log.warn("deleteAll(): failed to delete " + f.getPath());
+			}
+			else
+			{
+				log.debug("          deleted " + f.getPath());
+			}
 		}
 	}
 
@@ -282,7 +294,10 @@ public class ClusterSegmentsStorage
 				File f = new File(searchIndexDirectory, zipEntry.getName());
 				if (log.isDebugEnabled())
 					log.debug("                Unpack " + f.getAbsolutePath());
-				f.getParentFile().mkdirs();
+				if (!f.getParentFile().mkdirs())
+				{
+					log.warn("upackpatch():  failes to create dirs in " + f.getParentFile().getPath());
+				}
 				fout = new FileOutputStream(f);
 
 				int len;
@@ -292,7 +307,9 @@ public class ClusterSegmentsStorage
 				}
 				zin.closeEntry();
 				fout.close();
-				f.setLastModified(ts);
+				if (!f.setLastModified(ts)) {
+					log.warn("Failed to set modification time on: " + f.getPath());
+				}
 			}
 
 		}
@@ -421,56 +438,44 @@ public class ClusterSegmentsStorage
 	 * @throws IOException
 	 */
 	private void addFile(File f, ZipOutputStream zout, byte[] buffer, long modtime)
-			throws IOException
+	throws IOException
 	{
-		FileInputStream fin = null;
-		try
+
+		if (f.isDirectory())
 		{
-			if (f.isDirectory())
+			File[] files = f.listFiles();
+			if (files != null)
 			{
-				File[] files = f.listFiles();
-				if (files != null)
+				for (int i = 0; i < files.length; i++)
 				{
-					for (int i = 0; i < files.length; i++)
+					if (files[i].isDirectory())
 					{
-						if (files[i].isDirectory())
+						addFile(files[i], zout, buffer, modtime);
+					}
+					else
+					{
+						if (files[i].lastModified() > modtime)
 						{
-							addFile(files[i], zout, buffer, modtime);
+							log.debug("               Add " + files[i].getPath());
+							addSingleFile(files[i], zout, buffer);
 						}
 						else
 						{
-							if (files[i].lastModified() > modtime)
-							{
-								log.debug("               Add " + files[i].getPath());
-								addSingleFile(files[i], zout, buffer);
-							}
-							else
-							{
-								log.debug("              Ignore " + files[i].getPath());
-							}
+							log.debug("              Ignore " + files[i].getPath());
 						}
 					}
 				}
 			}
-			else
-			{
-				if (f.lastModified() > modtime)
-				{
-					addSingleFile(f, zout, buffer);
-				}
-			}
 		}
-		finally
+		else
 		{
-			try
+			if (f.lastModified() > modtime)
 			{
-				fin.close();
-			}
-			catch (Exception e)
-			{
-				log.debug(e);
+				addSingleFile(f, zout, buffer);
 			}
 		}
+
+
 	}
 
 	private void addSingleFile(File file, ZipOutputStream zout, byte[] buffer)

@@ -22,13 +22,21 @@
 package org.sakaiproject.search.mock;
 
 import java.security.Principal;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 
+/**
+ * @author ieb
+ *
+ */
 public class MockSessionManager implements SessionManager
 {
+
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.tool.api.SessionManager#getActiveUserCount(int)
 	 */
@@ -73,14 +81,14 @@ public class MockSessionManager implements SessionManager
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
-	* @see org.sakaiproject.tool.api.SessionManager#makeSessionId(org.sakaiproject.tool.api.Session)
-	*/
+	 * @see org.sakaiproject.tool.api.SessionManager#makeSessionId(org.sakaiproject.tool.api.Session)
+	 */
 	public String makeSessionId(HttpServletRequest req, Principal principal)
 	{
 		return null;
-	}	  	 
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.tool.api.SessionManager#setCurrentSession(org.sakaiproject.tool.api.Session)
@@ -114,6 +122,10 @@ public class MockSessionManager implements SessionManager
 	public Session startSession(String id)
 	{
 		return new MockSession();
+	}
+
+	public List<Session> getSessions() {
+		return null;
 	}
 
 }

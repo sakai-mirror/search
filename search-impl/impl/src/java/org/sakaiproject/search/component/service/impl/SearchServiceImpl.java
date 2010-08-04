@@ -67,6 +67,7 @@ public class SearchServiceImpl extends BaseSearchServiceImpl
 
 	private long reloadEnd;
 
+	private static final String DIGEST_STORE_FOLDER = "/searchdigest/";
 
 	/**
 	 * Register a notification action to listen to events and modify the search
@@ -113,8 +114,6 @@ public class SearchServiceImpl extends BaseSearchServiceImpl
 
 		String lastLoad = (new Date(reloadEnd)).toString();
 		String loadTime = String.valueOf((double) (0.001 * (reloadEnd - reloadStart)));
-		SearchWriterLock lock = searchIndexBuilderWorker.getCurrentLock();
-		List lockNodes = searchIndexBuilderWorker.getNodeStatus();
 
 		return Messages.getString("SearchServiceImpl.40") + lastLoad + Messages.getString("SearchServiceImpl.38") + loadTime + Messages.getString("SearchServiceImpl.37"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
@@ -237,9 +236,6 @@ public class SearchServiceImpl extends BaseSearchServiceImpl
 		this.searchIndexBuilderWorker = searchIndexBuilderWorker;
 	}
 
-
-
-	
 	
 
 }

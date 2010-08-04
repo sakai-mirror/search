@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.search.model.SearchBuilderItem;
+
 
 /**
  * Provides a search interface
@@ -117,6 +119,9 @@ public interface SearchService extends Diagnosable
 	 * Search field The reference of the entity
 	 */
 	public static final String FIELD_REFERENCE = "reference";
+	
+	
+	public static final String FIELD_DIGEST_COUNT = "digestCount";
 
 	public static final String DATE_STAMP = "indexdate";
 
@@ -131,7 +136,7 @@ public interface SearchService extends Diagnosable
 	 * @param searchStart
 	 * @return
 	 */
-	SearchList search(String searchTerms, List contexts, int searchStart,
+	SearchList search(String searchTerms, List<String> contexts, int searchStart,
 			int searchEnd);
 
 	/**
@@ -148,7 +153,7 @@ public interface SearchService extends Diagnosable
 	 * @param sorterName a lucene sorter
 	 * @return
 	 */
-	public SearchList search(String searchTerms, List contexts, int start,
+	public SearchList search(String searchTerms, List<String> contexts, int start,
 			int end, String filterName, String sorterName);
 	/**
 	 * Adds a function for the SearchService to respond to and route to the
@@ -214,21 +219,21 @@ public interface SearchService extends Diagnosable
 	 * 
 	 * @return
 	 */
-	List getAllSearchItems();
+	List<SearchBuilderItem> getAllSearchItems();
 
 	/**
 	 * get the master itemf to sthe site
 	 * 
 	 * @return
 	 */
-	List getSiteMasterSearchItems();
+	List<SearchBuilderItem> getSiteMasterSearchItems();
 
 	/**
 	 * get the global master items
 	 * 
 	 * @return
 	 */
-	List getGlobalMasterSearchItems();
+	List<SearchBuilderItem> getGlobalMasterSearchItems();
 
 	/**
 	 * Get the status of the search engine
@@ -254,7 +259,7 @@ public interface SearchService extends Diagnosable
 
 	/**
 	 * get the term vector for this document, where document is the 
-	 * @param doc
+	 * @param documentId
 	 * @return
 	 * @throws IOException 
 	 */
@@ -262,7 +267,7 @@ public interface SearchService extends Diagnosable
 
 
 	/**
-	 * generates a block of XML representign the search results
+	 * generates a block of XML representing the search results
 	 * @param parameterMap
 	 * @return
 	 */
@@ -273,5 +278,11 @@ public interface SearchService extends Diagnosable
 	 */
 	boolean isEnabled();
 
-
+	/**
+	 * Get the storage location for Digested content. Will return null if system is
+	 * Not set up to store content on the fs
+	 * @return
+	 */
+	public String getDigestStoragePath();
+	
 }
