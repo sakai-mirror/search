@@ -925,7 +925,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		{
 			try
 			{
-				packetStream.close();
+				if (packetStream != null)
+				{
+					packetStream.close();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -986,7 +989,9 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			if (packetFile.exists())
 			{
 				packetStream = new FileInputStream(packetFile).getChannel();
-				sharedTempFile.getParentFile().mkdirs();
+				if (!sharedTempFile.getParentFile().mkdirs()) {
+					log.warn("couldn't delete" + sharedTempFile.getPath());
+				}
 				sharedStream = new FileOutputStream(sharedTempFile).getChannel();
 
 				doBlockedStream(packetStream, sharedStream);
@@ -1016,7 +1021,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				}
 
 				long st = System.currentTimeMillis();
-				sharedTempFile.renameTo(sharedFinalFile);
+				if (!sharedTempFile.renameTo(sharedFinalFile))
+				{
+					log.warn("Couldn't rename file " + sharedTempFile.getPath() + " to " + sharedFinalFile.getPath());
+				}
 				if (searchService.hasDiagnostics())
 				{
 					log.info("Renamed " + sharedTempFile.getPath() + " to "
@@ -1034,7 +1042,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		{
 			try
 			{
-				packetStream.close();
+				if (packetStream != null) 
+				{
+					packetStream.close();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1050,7 +1061,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			}
 			try
 			{
-				sharedStream.close();
+				if (sharedStream != null)
+				{
+					sharedStream.close();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1246,7 +1260,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 					File f = new File(sharedSegment);
 					if (f.exists())
 					{
-						f.delete();
+						if (!f.delete())
+						{
+							log.warn("unable to delete " + f.getPath());
+						}
 					}
 				}
 
@@ -1260,7 +1277,9 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		{
 			try
 			{
-				segmentDelete.close();
+				if (segmentDelete != null) {
+					segmentDelete.close();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1284,7 +1303,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				break;
 			}
 		}
-		f.mkdirs();
+		if (!f.mkdirs())
+		{
+			log.warn("unable to create directory: " + f.getPath());
+		}
 
 		SegmentInfo si = SegmentInfoImpl.newLocalSegmentInfo(f, localStructuredStorage,
 				searchIndexDirectory);
@@ -1525,7 +1547,9 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		{
 			SegmentInfoImpl.deleteAll(f);
 		}
-		f.mkdirs();
+		if (!f.mkdirs()) {
+			log.warn("couldn't create directories " + f.getPath());
+		}
 		return f;
 	}
 
@@ -1574,7 +1598,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				else
 				{
 					File nd = new File(d, fl[i].getName());
-					nd.mkdirs();
+					if (!nd.mkdirs())
+					{
+						log.warn("couldn't create directories " + nd.getPath());
+					}
 					copyAll(fl[i], nd);
 				}
 			}
@@ -1603,7 +1630,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			{
 				if (!d.exists())
 				{
-					d.mkdirs();
+					if (!d.mkdirs())
+					{
+						log.warn("Unable to create directory " + d.getPath());
+					}
 				}
 				t = new File(d, s.getName());
 			}
@@ -1612,7 +1642,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				File p = d.getParentFile();
 				if (!p.exists())
 				{
-					p.mkdirs();
+					if (!p.mkdirs())
+					{
+						log.warn("couldn't create:  " + p.getPath());
+					}
 				}
 			}
 			FileChannel srcChannel = null;
@@ -1746,7 +1779,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 				InputStream packetStream = null;
 				try
 				{
-					long version = resultSet.getLong(1);
+					
 					File f = new File(getSharedFileName(INDEX_PATCHNAME,
 							sharedStructuredStorage));
 					if (f.exists())
@@ -1914,7 +1947,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			if (packetFile.exists())
 			{
 				packetStream = new FileInputStream(packetFile).getChannel();
-				sharedTempFile.getParentFile().mkdirs();
+				if (!sharedTempFile.getParentFile().mkdirs())
+				{
+					log.warn("Unable to create directory " + sharedTempFile.getParentFile().getPath());
+				}
 				sharedStream = new FileOutputStream(sharedTempFile).getChannel();
 
 				// Copy file contents from source to destination
@@ -1951,9 +1987,16 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 					}
 				}
 				addsi.setVersion(newVersion);
-				sharedFinalFile.getParentFile().mkdirs();
+				if (!sharedFinalFile.getParentFile().mkdirs())
+				{
+					log.warn("Couln't create directory " + sharedFinalFile.getParentFile().getPath());
+				}
 				long st = System.currentTimeMillis();
-				sharedTempFile.renameTo(sharedFinalFile);
+				if (!sharedTempFile.renameTo(sharedFinalFile))
+				{
+					log.warn("Couldn't rename " + sharedTempFile.getPath() + " to " + sharedFinalFile.getPath());
+					
+				}
 				if (searchService.hasDiagnostics())
 				{
 					log.info("Renamed " + sharedTempFile.getPath() + " to "
@@ -2356,7 +2399,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 					{
 						File fnew = new File(getSharedFileName(si.getName(),
 								sharedStructuredStorage));
-						fnew.getParentFile().mkdirs();
+						if (!fnew.getParentFile().mkdirs())
+						{
+							log.warn("couldn't create directory: " + fnew.getParentFile().getPath());
+						}
 						log.info("Moving " + f.getPath() + " to " + fnew.getPath());
 						try
 						{
@@ -2411,7 +2457,10 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 			{
 				File fnew = SegmentInfoImpl.getSegmentLocation(si.getName(),
 						localStructuredStorage, searchIndexDirectory);
-				fnew.getParentFile().mkdirs();
+				if (!fnew.getParentFile().mkdirs())
+				{
+					log.warn("couldn't create directory " + fnew.getParentFile().getPath());
+				}
 				log.info("Moving " + f.getPath() + " to " + fnew.getPath());
 				try
 				{
@@ -2538,7 +2587,7 @@ public class JDBCClusterIndexStore implements ClusterFilesystem
 		try
 		{
 			connection = dataSource.getConnection();
-			List l = getDBSegments(connection);
+			List<SegmentInfo> l = getDBSegments(connection);
 			if (l != null && l.size() > 0)
 			{
 				return true;

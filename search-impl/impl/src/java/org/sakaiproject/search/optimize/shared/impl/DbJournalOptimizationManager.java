@@ -172,6 +172,7 @@ public class DbJournalOptimizationManager implements JournalManager
 	{
 		PreparedStatement getJournalSavePointPst = null;
 		PreparedStatement getEarlierSavePoint = null;
+		PreparedStatement getEarlierSavePoint2 = null;
 		PreparedStatement lockEarlierSavePoints = null;
 		PreparedStatement listMergeSet = null;
 		PreparedStatement listJournal = null;
@@ -229,11 +230,11 @@ public class DbJournalOptimizationManager implements JournalManager
 
 			}
 			rs.close();
-			getEarlierSavePoint = connection
+			getEarlierSavePoint2 = connection
 					.prepareStatement("select min(txid),max(txid) from search_journal where txid < ? and  status = 'commited' ");
-			getEarlierSavePoint.clearParameters();
-			getEarlierSavePoint.setLong(1, oldestActiveSavepoint);
-			rs = getEarlierSavePoint.executeQuery();
+			getEarlierSavePoint2.clearParameters();
+			getEarlierSavePoint2.setLong(1, oldestActiveSavepoint);
+			rs = getEarlierSavePoint2.executeQuery();
 			jms.oldestSavePoint = 0;
 			long earliestSavePoint = 0;
 			if (rs.next())
@@ -264,8 +265,8 @@ public class DbJournalOptimizationManager implements JournalManager
 				// the number will be less than this if there are holes
 				jms.oldestSavePoint = earliestSavePoint + 2*journalSettings.getMinimumOptimizeSavePoints();
 				// adjust for a potential hole
-				getEarlierSavePoint.setLong(1, jms.oldestSavePoint);
-				rs = getEarlierSavePoint.executeQuery();
+				getEarlierSavePoint2.setLong(1, jms.oldestSavePoint);
+				rs = getEarlierSavePoint2.executeQuery();
 				jms.oldestSavePoint = 0;
 				earliestSavePoint = 0;
 				if (rs.next())
@@ -410,6 +411,15 @@ public class DbJournalOptimizationManager implements JournalManager
 			{
 				log.debug(ex);
 			}
+			try
+			{
+				getEarlierSavePoint2.close();
+			}
+			catch (Exception ex)
+			{
+				log.debug(ex);
+			}
+
 			try
 			{
 				if (lockEarlierSavePoints != null) lockEarlierSavePoints.close();

@@ -21,11 +21,7 @@
 
 package org.sakaiproject.search.journal.impl;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -682,9 +678,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 		long r2 = start2;
 		long f2 = start2;
 		long f3 = start2;
-		long x2 = start2;
+		
 
-		long tlock = 0;
+		
 
 		log.debug("Check 1: modified="  + modified + " multiReader=" + multiReader + " current=" + current);
 
@@ -753,7 +749,7 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 				f1 = System.currentTimeMillis();
 				log.warn("Failed to get read lock on index ");
 			}
-			x2 = System.currentTimeMillis();
+			
 		}
 		long f = System.currentTimeMillis();
 		if ((f - start) > 1000)
@@ -763,9 +759,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 							+ " ms");
 			log.info("Read Lock aquire " + (f1 - x1) + " ms");
 			log.info("Index Load aquire " + (r2 - r1) + " ms");
-			log.info("Read Lock Release " + (f3 - f3) + " ms");
+			log.info("Read Lock Release " + (f2 - f3) + " ms");
 		}
-		if (multiReader instanceof ThreadBinder)
+		if (multiReader != null)
 		{
 			((ThreadBinder) multiReader).bind(threadLocalManager);
 		}
@@ -786,7 +782,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 		Directory d = null;
 		if (!f.exists())
 		{
-			f.mkdirs();
+			if (!f.mkdirs()) {
+				throw new IOException("can't create index directory " + f.getPath());
+			}
 			log.debug("Indexing in " + f.getAbsolutePath());
 			d = FSDirectory.getDirectory(journalSettings.getSearchIndexDirectory(), true);
 		}
@@ -903,6 +901,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 		}
 		catch (IOException ex)
 		{
+			if (log.isDebugEnabled()) {
+				ex.printStackTrace();
+			}
 			seginfo.add("Failed to get Segment Info list " + ex.getClass().getName()
 					+ " " + ex.getMessage());
 
@@ -1274,7 +1275,9 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 				Directory d = null;
 				if (!f.exists())
 				{
-					f.mkdirs();
+					if (!f.mkdirs()) {
+						throw new IOException("can't create index folder " + f.getPath());
+					}
 					log.debug("Indexing in " + f.getAbsolutePath());
 					d = FSDirectory.getDirectory(journalSettings
 							.getSearchIndexDirectory(), true);

@@ -29,10 +29,11 @@ import java.io.StringReader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.search.api.SearchUtils;
 
 /**
@@ -41,42 +42,53 @@ import org.sakaiproject.search.api.SearchUtils;
 public class PDFContentDigester extends BaseContentDigester
 {
 	private static Log log = LogFactory.getLog(PDFContentDigester.class);
-	
+
 	public String getContent(ContentResource contentResource)
 	{
-		if ( contentResource != null && 
-				contentResource.getContentLength() > maxDigestSize  ) {
-			throw new RuntimeException("Attempt to get too much content as a string on "+contentResource.getReference());
+		if (contentResource == null) {
+			throw new RuntimeException("Null contentResource passed to getContent");
 		}
 
 		InputStream contentStream = null;
 		PDFParser parser = null;
-		try
-		{
+		PDDocument pddoc = null;
+		try {
 			contentStream = contentResource.streamContent();
 			parser = new PDFParser(new BufferedInputStream(contentStream));
 			parser.parse();
-			PDDocument pddoc = parser.getPDDocument();
-			
-			PDFTextStripper stripper = new PDFTextStripper();
-			stripper.setLineSeparator("\n");		
-			CharArrayWriter cw = new CharArrayWriter();
-			stripper.writeText(pddoc, cw);
-			pddoc.close();
-			return SearchUtils.appendCleanString(cw.toCharArray(),null).toString();
-		}
-		catch (Exception ex)
-		{
-			try {
-				PDDocument pddoc = parser.getPDDocument();
-				pddoc.close();
-			} catch ( Exception e ) {
-				log.debug(e);
+			pddoc = parser.getPDDocument();
+			if (pddoc != null) {
+				PDFTextStripper stripper = new PDFTextStripper();
+				stripper.setLineSeparator("\n");		
+				CharArrayWriter cw = new CharArrayWriter();
+				stripper.writeText(pddoc, cw);
+				return SearchUtils.appendCleanString(cw.toCharArray(),null).toString();
 			}
-			throw new RuntimeException("Failed to get content for indexing: cause: "+ex.getMessage(), ex);
+		} catch (ServerOverloadException e) {
+			String eMessage = e.getMessage();
+			if (eMessage == null) {
+				eMessage = e.toString();
+			}
+			throw new RuntimeException("Failed to get content for indexing: cause: ServerOverloadException: " + eMessage, e);
+		}
+		catch (IOException e) {
+			String eMessage = e.getMessage();
+			if (eMessage == null) {
+				eMessage = e.toString();
+			}
+			throw new RuntimeException("Failed to get content for indexing: cause: IOException:  "+ eMessage , e);
 		}
 		finally
 		{
+			if (pddoc != null) {
+				try {
+					pddoc.close();
+				} 
+				catch (IOException e) {
+					log.debug(e);
+				}
+			}
+			
 			if (contentStream != null)
 			{
 				try
@@ -89,12 +101,13 @@ public class PDFContentDigester extends BaseContentDigester
 				}
 			}
 		}
+		return null;
 	}
 	public Reader getContentReader(ContentResource contentResource)
 	{
 		return new StringReader(getContent(contentResource));
 	}
 
-	
+
 
 }

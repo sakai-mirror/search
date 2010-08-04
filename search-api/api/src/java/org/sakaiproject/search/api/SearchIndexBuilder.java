@@ -25,10 +25,11 @@ import java.util.List;
 
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.Notification;
+import org.sakaiproject.search.model.SearchBuilderItem;
 
 /**
  * A SearchIndexBuilder builds a search index, it must manage its own list of
- * pending documents and should probably do this in a seperate thread
+ * pending documents and should probably do this in a separate thread
  * 
  * @author ieb
  */
@@ -74,7 +75,7 @@ public interface SearchIndexBuilder
 	 * 
 	 * @return
 	 */
-	List getContentProducers();
+	List<EntityContentProducer> getContentProducers();
 
 	/**
 	 * Close down the entire search infrastructure
@@ -104,7 +105,7 @@ public interface SearchIndexBuilder
 	 * get a list of all entitied in the search index
 	 * @return
 	 */
-	List getAllSearchItems();
+	List<SearchBuilderItem> getAllSearchItems();
 	
 	/**
 	 * get an entity content producer that can handle the event
@@ -125,49 +126,17 @@ public interface SearchIndexBuilder
 	 * Site (current site)
 	 * @return
 	 */
-	List getSiteMasterSearchItems();
+	List<SearchBuilderItem> getSiteMasterSearchItems();
 
 	/**
 	 * get a list of global search items
 	 * @return
 	 */
-	List getGlobalMasterSearchItems();
-
-	/**
-	 * get the current search lock
-	 * @return
-	 */
-	//SearchWriterLock getCurrentLock();
-
-	/**
-	 * provide a list of node statuses for all indexer nodes in a cluster
-	 * @return
-	 */
-	//List getNodeStatus();
-
-	/**
-	 * force the removal of a worker lock
-	 * @return
-	 */
-	//boolean removeWorkerLock();
-
-	//String getLastDocument();
-
-	//String getLastElapsed();
-
-	//String getCurrentDocument();
-
-	//String getCurrentElapsed();
+	List<SearchBuilderItem> getGlobalMasterSearchItems();
 
 	boolean isOnlyIndexSearchToolSites();
 	
 	boolean isExcludeUserSites();
-
-	/**
-	 * @return
-	 */
-	//boolean isLocalLock();
-
 	
 
 }

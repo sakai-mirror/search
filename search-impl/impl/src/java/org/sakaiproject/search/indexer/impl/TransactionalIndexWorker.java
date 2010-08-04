@@ -41,6 +41,7 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.search.api.EntityContentProducer;
 import org.sakaiproject.search.api.SearchIndexBuilder;
 import org.sakaiproject.search.api.SearchService;
+import org.sakaiproject.search.api.StoredDigestContentProducer;
 import org.sakaiproject.search.api.rdf.RDFIndexException;
 import org.sakaiproject.search.api.rdf.RDFSearchService;
 import org.sakaiproject.search.indexer.api.IndexUpdateTransaction;
@@ -48,11 +49,11 @@ import org.sakaiproject.search.indexer.api.IndexWorker;
 import org.sakaiproject.search.indexer.api.IndexWorkerDocumentListener;
 import org.sakaiproject.search.indexer.api.IndexWorkerListener;
 import org.sakaiproject.search.indexer.api.NoItemsToIndexException;
-import org.sakaiproject.search.journal.impl.JournalSettings;
 import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.search.transaction.api.IndexTransaction;
 import org.sakaiproject.search.transaction.api.IndexTransactionException;
 import org.sakaiproject.search.transaction.api.TransactionIndexManager;
+import org.sakaiproject.search.util.DigestStorageUtil;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
@@ -87,6 +88,13 @@ public class TransactionalIndexWorker implements IndexWorker
 	 */
 	private RDFSearchService rdfSearchService;
 
+	
+	private SearchService searchService;
+	
+	public void setSearchService(SearchService searchService) {
+		this.searchService = searchService;
+	}
+
 	/**
 	 * dependency
 	 */
@@ -113,7 +121,6 @@ public class TransactionalIndexWorker implements IndexWorker
 	{
 		
 		// get a list to perform this transaction
-		List<SearchBuilderItem> runtimeToDo = null;
 		IndexTransaction t = null;
 		try
 		{
@@ -196,11 +203,11 @@ public class TransactionalIndexWorker implements IndexWorker
 		IndexWriter indexWrite = null;
 		IndexReader indexReader = null;
 		int nprocessed = 0;
+		DigestStorageUtil digestStorageUtil = new DigestStorageUtil(searchService);
 		try
 		{
 			fireIndexStart();
 
-			long last = System.currentTimeMillis();
 			Map<String, SearchBuilderItem> finalState = new HashMap<String, SearchBuilderItem>();
 			for (Iterator<SearchBuilderItem> tditer = ((IndexUpdateTransaction) transaction)
 					.lockedItemIterator(); tditer.hasNext();)
@@ -222,6 +229,9 @@ public class TransactionalIndexWorker implements IndexWorker
 					indexReader = ((IndexUpdateTransaction) transaction).getIndexReader();
 					int ndel = indexReader.deleteDocuments(new Term(
 							SearchService.FIELD_REFERENCE, sbi.getName()));
+					if (log.isDebugEnabled()) {
+						log.debug(ndel + " index documents deleted");
+					}
 				}
 				else if (SearchBuilderItem.ACTION_DELETE
 						.equals(sbi.getSearchaction()))
@@ -234,7 +244,12 @@ public class TransactionalIndexWorker implements IndexWorker
 							.getIndexReader();
 					int ndel = indexReader.deleteDocuments(new Term(
 							SearchService.FIELD_REFERENCE, sbi.getName()));
-
+					if (log.isDebugEnabled()) {
+						log.debug(ndel + " index documents deleted");
+					}
+					digestStorageUtil.deleteAllDigests(sbi.getName());
+					
+					
 					nprocessed++;
 				}
 
@@ -243,6 +258,7 @@ public class TransactionalIndexWorker implements IndexWorker
 			for (SearchBuilderItem sbi : finalState.values())
 			{
 
+				
 				Reader contentReader = null;
 				String ref = null;
 				try
@@ -299,26 +315,26 @@ public class TransactionalIndexWorker implements IndexWorker
 								if (container == null) container = ""; //$NON-NLS-1$
 								doc.add(new Field(SearchService.DATE_STAMP, String
 										.valueOf(System.currentTimeMillis()),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_CONTAINER,
 										filterNull(container), Field.Store.COMPRESS,
-										Field.Index.UN_TOKENIZED));
+										Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_ID, filterNull(sep
 										.getId(ref)), Field.Store.COMPRESS,
 										Field.Index.NO));
 								doc.add(new Field(SearchService.FIELD_TYPE,
 										filterNull(sep.getType(ref)),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_SUBTYPE,
 										filterNull(sep.getSubType(ref)),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_REFERENCE,
 										filterNull(ref), Field.Store.COMPRESS,
-										Field.Index.UN_TOKENIZED));
+										Field.Index.NOT_ANALYZED));
 
 								doc.add(new Field(SearchService.FIELD_CONTEXT,
 										filterNull(sep.getSiteId(ref)),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 								
 								// add last part of the index as this is the filename
 								String idIndex = sep.getId(ref);
@@ -329,13 +345,13 @@ public class TransactionalIndexWorker implements IndexWorker
 								
 								doc.add(new Field(SearchService.FIELD_CONTENTS,
 										idIndex, Field.Store.COMPRESS,
-										Field.Index.TOKENIZED, Field.TermVector.YES));
+										Field.Index.ANALYZED, Field.TermVector.YES));
 
 								// add the title 
 								String title = filterPunctuation(sep.getTitle(ref));
 								doc.add(new Field(SearchService.FIELD_CONTENTS,
 										title, Field.Store.COMPRESS,
-										Field.Index.TOKENIZED, Field.TermVector.YES));
+										Field.Index.ANALYZED, Field.TermVector.YES));
 
 								if (sep.isContentFromReader(ref))
 								{
@@ -356,24 +372,34 @@ public class TransactionalIndexWorker implements IndexWorker
 										log.debug("Adding Content for " + ref + " as ["
 												+ content + "]");
 									}
+									int docCount = digestStorageUtil.getDocCount(ref) + 1;
 									doc.add(new Field(SearchService.FIELD_CONTENTS,
 											filterNull(content), Field.Store.NO,
-											Field.Index.TOKENIZED, Field.TermVector.YES));
+											Field.Index.ANALYZED, Field.TermVector.YES));
+							if (sep instanceof StoredDigestContentProducer) {
+										doc.add(new Field(SearchService.FIELD_DIGEST_COUNT,
+												Integer.valueOf(docCount).toString(), Field.Store.COMPRESS, Field.Index.NO, Field.TermVector.NO));
+										digestStorageUtil.saveContentToStore(ref, content, docCount);
+										if (docCount > 2) {
+											digestStorageUtil.cleanOldDigests(ref);
+										}
+									}
+
 								}
 
 								doc.add(new Field(SearchService.FIELD_TITLE,
 										filterNull(sep.getTitle(ref)),
-										Field.Store.COMPRESS, Field.Index.TOKENIZED,
+										Field.Store.COMPRESS, Field.Index.ANALYZED,
 										Field.TermVector.YES));
 								doc.add(new Field(SearchService.FIELD_TOOL,
 										filterNull(sep.getTool()), Field.Store.COMPRESS,
-										Field.Index.UN_TOKENIZED));
+										Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_URL,
 										filterUrl(filterNull(sep.getUrl(ref))),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 								doc.add(new Field(SearchService.FIELD_SITEID,
 										filterNull(sep.getSiteId(ref)),
-										Field.Store.COMPRESS, Field.Index.UN_TOKENIZED));
+										Field.Store.COMPRESS, Field.Index.NOT_ANALYZED));
 
 								// add the custom properties
 
@@ -412,7 +438,7 @@ public class TransactionalIndexWorker implements IndexWorker
 													doc.add(new Field(key,
 															filterNull(values[i]),
 															Field.Store.COMPRESS,
-															Field.Index.TOKENIZED,
+															Field.Index.ANALYZED,
 															Field.TermVector.YES));
 												}
 												else
@@ -420,7 +446,7 @@ public class TransactionalIndexWorker implements IndexWorker
 													doc.add(new Field(key,
 															filterNull(values[i]),
 															Field.Store.COMPRESS,
-															Field.Index.UN_TOKENIZED));
+															Field.Index.NOT_ANALYZED));
 												}
 											}
 										}
@@ -515,6 +541,13 @@ public class TransactionalIndexWorker implements IndexWorker
 		return nprocessed;
 
 	}
+
+
+
+
+
+
+
 
 	private String filterPunctuation(String term) {
 		if ( term == null ) {

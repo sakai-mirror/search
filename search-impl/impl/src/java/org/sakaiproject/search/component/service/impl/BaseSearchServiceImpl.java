@@ -38,6 +38,7 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -67,6 +68,7 @@ import org.sakaiproject.search.component.Messages;
 import org.sakaiproject.search.filter.SearchItemFilter;
 import org.sakaiproject.search.index.IndexReloadListener;
 import org.sakaiproject.search.index.IndexStorage;
+import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
@@ -104,11 +106,12 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	 */
 	private SessionManager sessionManager;
 
+	private static final String DIGEST_STORE_FOLDER = "/searchdigest/";
 
 	/**
 	 * Optional dependencies
 	 */
-	private List triggerFunctions;
+	private List<String> triggerFunctions;
 
 	/**
 	 * the notification object
@@ -201,7 +204,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 			notification.setFunction(SearchService.EVENT_TRIGGER_SEARCH);
 			if (triggerFunctions != null)
 			{
-				for (Iterator ifn = triggerFunctions.iterator(); ifn.hasNext();)
+				for (Iterator<String> ifn = triggerFunctions.iterator(); ifn.hasNext();)
 				{
 					String function = (String) ifn.next();
 					notification.addFunction(function);
@@ -269,7 +272,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	/**
 	 * @return Returns the triggerFunctions.
 	 */
-	public List getTriggerFunctions()
+	public List<String> getTriggerFunctions()
 	{
 		return triggerFunctions;
 	}
@@ -278,7 +281,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	 * @param triggerFunctions
 	 *        The triggerFunctions to set.
 	 */
-	public void setTriggerFunctions(List triggerFunctions)
+	public void setTriggerFunctions(List<String> triggerFunctions)
 	{
 		if (initComplete)
 			throw new RuntimeException(
@@ -303,12 +306,12 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	 * 
 	 * @param indexFilter
 	 */
-	public SearchList search(String searchTerms, List contexts, int start, int end)
+	public SearchList search(String searchTerms, List<String> contexts, int start, int end)
 	{
 		return search(searchTerms, contexts, start, end, defaultFilter, defaultSorter);
 	}
 
-	public SearchList search(String searchTerms, List contexts, int start, int end,
+	public SearchList search(String searchTerms, List<String> contexts, int start, int end,
 			String filterName, String sorterName)
 	{
 		try
@@ -322,7 +325,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 			if (contexts != null && contexts.size() > 0)
 			{
 				BooleanQuery contextQuery = new BooleanQuery();
-				for (Iterator i = contexts.iterator(); i.hasNext();)
+				for (Iterator<String> i = contexts.iterator(); i.hasNext();)
 				{
 					// Setup query so that it will allow results from any
 					// included site, not all included sites.
@@ -347,7 +350,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 					PostMethod post = new PostMethod(searchServerUrl);
 					String userId = sessionManager.getCurrentSessionUserId();
 					StringBuilder sb = new StringBuilder();
-					for (Iterator ci = contexts.iterator(); ci.hasNext();)
+					for (Iterator<String> ci = contexts.iterator(); ci.hasNext();)
 					{
 						sb.append(ci.next()).append(";"); //$NON-NLS-1$
 					}
@@ -512,17 +515,17 @@ public abstract class BaseSearchServiceImpl implements SearchService
 		return searchIndexBuilder.getPendingDocuments();
 	}
 
-	public List getAllSearchItems()
+	public List<SearchBuilderItem> getAllSearchItems()
 	{
 		return searchIndexBuilder.getAllSearchItems();
 	}
 
-	public List getSiteMasterSearchItems()
+	public List<SearchBuilderItem> getSiteMasterSearchItems()
 	{
 		return searchIndexBuilder.getSiteMasterSearchItems();
 	}
 
-	public List getGlobalMasterSearchItems()
+	public List<SearchBuilderItem> getGlobalMasterSearchItems()
 	{
 		return searchIndexBuilder.getGlobalMasterSearchItems();
 	}
@@ -756,7 +759,7 @@ public abstract class BaseSearchServiceImpl implements SearchService
 				sb.append(" start=\"").append(sl.getStart()).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
 				sb.append(" size=\"").append(sl.size()).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
 				sb.append(" >"); //$NON-NLS-1$
-				for (Iterator si = sl.iterator(); si.hasNext();)
+				for (Iterator<SearchResult> si = sl.iterator(); si.hasNext();)
 				{
 					SearchResult sr = (SearchResult) si.next();
 					sr.toXMLString(sb);
@@ -778,15 +781,15 @@ public abstract class BaseSearchServiceImpl implements SearchService
 			sb.append("<fault>"); //$NON-NLS-1$
 			sb.append("<request>"); //$NON-NLS-1$
 			sb.append("<![CDATA["); //$NON-NLS-1$
-			sb.append(" userid = ").append(StringUtils.xmlEscape(userid)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			sb.append(" userid = ").append(StringEscapeUtils.escapeXml(userid)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			sb
-					.append(" searchTerms = ").append(StringUtils.xmlEscape(searchTerms)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+					.append(" searchTerms = ").append(StringEscapeUtils.escapeXml(searchTerms)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			sb
-					.append(" checksum = ").append(StringUtils.xmlEscape(checksum)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+					.append(" checksum = ").append(StringEscapeUtils.escapeXml(checksum)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			sb
-					.append(" contexts = ").append(StringUtils.xmlEscape(contexts)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-			sb.append(" ss = ").append(StringUtils.xmlEscape(ss)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-			sb.append(" se = ").append(StringUtils.xmlEscape(se)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+					.append(" contexts = ").append(StringEscapeUtils.escapeXml(contexts)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			sb.append(" ss = ").append(StringEscapeUtils.escapeXml(ss)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			sb.append(" se = ").append(StringEscapeUtils.escapeXml(se)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			sb.append("]]>"); //$NON-NLS-1$
 			sb.append("</request>"); //$NON-NLS-1$
 			sb.append("<error>"); //$NON-NLS-1$
@@ -979,6 +982,8 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	{
 		this.userDirectoryService = userDirectoryService;
 	}
+	
+	
 	/**
 	 * @return Returns the indexStorage.
 	 */
@@ -1048,15 +1053,24 @@ public abstract class BaseSearchServiceImpl implements SearchService
 	 */
 	public boolean isEnabled()
 	{
-		enabled = "true".equals(ServerConfigurationService.getString("search.enable",
-		"false"));
+		enabled = ServerConfigurationService.getBoolean("search.enable",false);
 
 		log.info("Enable = "
 				+ ServerConfigurationService.getString("search.enable", "false"));
 
-		enabled = enabled
-			& "true".equals(ServerConfigurationService.getString("search.indexbuild",
-				"true"));
+		enabled = enabled && ServerConfigurationService.getBoolean("search.indexbuild",true);
 		return enabled;
 	}
+	
+	
+
+
+	public String getDigestStoragePath() {
+		String storePath = ServerConfigurationService.getString("bodyPath@org.sakaiproject.content.api.ContentHostingService");
+		if (storePath == null) {
+			return null;
+		}
+		return storePath + "/" + DIGEST_STORE_FOLDER;
+	}
+
 }

@@ -104,7 +104,7 @@ public class TransactionSequenceImpl implements TransactionSequence
 		catch (SQLException ex)
 		{
 			log.warn("Failed to check transaction table, ignore for HSQLDB pre-1.9+ versions. " + ex.getMessage());
-			// log.error("Failed to check transaction table ", ex);
+			// log.error("Failed to check transaction table ", ex);	
 		}
 		finally
 		{
@@ -223,7 +223,7 @@ public class TransactionSequenceImpl implements TransactionSequence
 			{
 			}
 			log.warn("Failed to get a transaction id, ignore for HSQLDB pre-1.9+ versions. " + ex.getMessage());
-			//log.error("Failed to get a transaction id ", ex);
+			// log.error("Failed to get a transaction id ", ex);
 			return -1;
 		}
 		finally

@@ -209,9 +209,7 @@ public class SearchIndexBuilderWorkerImpl implements Runnable, SearchIndexBuilde
 		enabled = "true".equals(serverConfigurationService.getString("search.enable",
 				"false"));
 
-		enabled = enabled
-				& "true".equals(serverConfigurationService.getString("search.indexbuild",
-						"true"));
+		enabled = enabled && serverConfigurationService.getBoolean("search.indexbuild",true);
 		
 
 		try
@@ -1375,13 +1373,13 @@ public class SearchIndexBuilderWorkerImpl implements Runnable, SearchIndexBuilde
 	 * 
 	 * @see org.sakaiproject.search.component.service.impl.SearchIndexBuilderWorkerAPI#getNodeStatus()
 	 */
-	public List getNodeStatus()
+	public List<SearchWriterLock> getNodeStatus()
 	{
 		String nodeID = getNodeID();
 		Connection connection = null;
 		PreparedStatement selectLock = null;
 		ResultSet resultSet = null;
-		ArrayList locks = new ArrayList();
+		ArrayList<SearchWriterLock>locks = new ArrayList<SearchWriterLock>();
 
 		try
 		{
@@ -1464,7 +1462,7 @@ public class SearchIndexBuilderWorkerImpl implements Runnable, SearchIndexBuilde
 		PreparedStatement selectNodeLock = null;
 		PreparedStatement clearLock = null;
 		ResultSet resultSet = null;
-		ArrayList locks = new ArrayList();
+		
 
 		try
 		{

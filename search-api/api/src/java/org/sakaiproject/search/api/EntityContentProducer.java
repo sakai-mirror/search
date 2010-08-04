@@ -23,7 +23,6 @@ package org.sakaiproject.search.api;
 
 import java.io.Reader;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.event.api.Event;
@@ -31,7 +30,7 @@ import org.sakaiproject.search.model.SearchBuilderItem;
 
 /**
  * This is a special class than handles ContentResources for the purposes of
- * search. This must be impelented in a thread safe way. The aim is to map the
+ * search. This must be implemented in a thread safe way. The aim is to map the
  * content handler to the mime type
  * 
  * @author ieb
@@ -40,10 +39,10 @@ public interface EntityContentProducer
 {
 
 	/**
-	 * Should the consumer use the reader or is it Ok to use a memory copy of
+	 * Should the consumer use the reader or is it OK to use a memory copy of
 	 * the content
 	 * 
-	 * @param cr
+	 * @param reference
 	 * @return
 	 */
 	boolean isContentFromReader(String reference);
@@ -51,7 +50,7 @@ public interface EntityContentProducer
 	/**
 	 * Get a reader for the supplied content resource
 	 * 
-	 * @param cr 
+	 * @param reference 
 	 * @return
 	 */
 	Reader getContentReader(String reference);
@@ -68,7 +67,7 @@ public interface EntityContentProducer
 	/**
 	 * get the title for the content
 	 * 
-	 * @param cr
+	 * @param reference
 	 * @return
 	 */
 	String getTitle(String reference);
@@ -76,7 +75,7 @@ public interface EntityContentProducer
 	/**
 	 * Gets the url that displays the entity
 	 * 
-	 * @param entity
+	 * @param reference
 	 * @return
 	 */
 	String getUrl(String reference);
@@ -84,7 +83,7 @@ public interface EntityContentProducer
 	/**
 	 * If the reference matches this EntityContentProducer return true
 	 * 
-	 * @param ref
+	 * @param reference
 	 * @return
 	 */
 	boolean matches(String reference);
@@ -114,36 +113,28 @@ public interface EntityContentProducer
 	
 	/**
 	 * get the site ID from the resource Name
-	 * @param resourceName
+	 * @param reference
 	 * @return
 	 */
 	String getSiteId(String reference);
 
 	/**
-	 * get all the content associated with a site managed by this EntityContentProducer
-	 * @deprecated See {@link #getSiteContentIterator(String)}
-	 * @param context
-	 * @return
-	 */
-	List getSiteContent(String context);
-	
-	/**
 	 * Get the site content as an iterator
 	 * @param context
 	 * @return
 	 */
-	Iterator getSiteContentIterator(String context);
+	Iterator<String> getSiteContentIterator(String context);
 
 	/**
 	 * If the reference should be indexed, return true
-	 * @param ref
+	 * @param reference
 	 * @return
 	 */
 	boolean isForIndex(String reference);
 
 	/**
 	 * returns true if the current user can view the search result
-	 * @param ref 
+	 * @param reference 
 	 * @return
 	 */
 	boolean canRead(String reference);
@@ -151,13 +142,13 @@ public interface EntityContentProducer
 	/**
 	 * Gets a map of custom document properties. The names of the map map will contain 
 	 * the index name to which the value is added.
-	 * The value is expected to be a String or String[], containig the value, values to be
+	 * The value is expected to be a String or String[], containing the value, values to be
 	 * added. Before using this method in your entity producer, be certain that the value
 	 * is not already in the index. ( See SearchService for list of Fields)
 	 * If the key starts with a "T" then the index will be tokenized and the T removed to form the index name
 	 * @return
 	 */
-	Map getCustomProperties(String ref);
+	Map<String, ?> getCustomProperties(String ref);
 
 	/**
 	 * At the moment this is a placeholder, but eventually
