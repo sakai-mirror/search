@@ -1,9 +1,9 @@
 <projectDescription>
   <name>sakai-search-adapters-pack</name>
-  <comment/>
+  <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects>
     <project>sakai-search-adapters-impl</project>
-    <project>sakai-search-util</project>
+    <project>search-util</project>
   </projects>
   <buildSpec>
     <buildCommand>

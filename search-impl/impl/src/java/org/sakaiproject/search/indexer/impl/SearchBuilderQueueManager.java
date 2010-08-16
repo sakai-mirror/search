@@ -52,7 +52,6 @@ import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.thread_local.api.ThreadLocalManager;
 
 /**
  * This class manages the Search Build Queue, it retrieves the
@@ -91,12 +90,6 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 
 	/** Configuration: to run the ddl on init or not. */
 	protected boolean autoDdl = false;
-
-	
-	private ThreadLocalManager threadLocalManager;
-	public void setThreadLocalManager(ThreadLocalManager threadLocalManager) {
-		this.threadLocalManager = threadLocalManager;
-	}
 
 	public void init()
 	{
@@ -800,19 +793,14 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 			//how long and how often should we sleep?
 			long sleepTime = 1000*60;
 			long sleepInterval = 1000;
+			long itemCount = 0;
+			long itemCountTotal = 0;
+			long itemSleepInterval = 100000;
 			long count = 0;
 			long totalCount = 0;
 			//Iterate through each site
 			for (Iterator<String> c = contextList.iterator(); c.hasNext();)
 			{
-
-				//SAK-17117 before we do this clear threadLocal
-
-				//get the security advisor stack
-				Object obj = threadLocalManager.get("SakaiSecurity.advisor.stack");
-				threadLocalManager.clear();
-				threadLocalManager.set("SakaiSecurity.advisor.stack", obj);
-
 				if (count == sleepInterval) {
 					log.info("sleeping to stop GC craziness");
 					log.info("done " + totalCount + "/" + contextList.size());
@@ -832,8 +820,6 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 				
 				String siteContext = (String) c.next();
 				log.info("Rebuild for " + siteContext + " (" + totalCount + "/" + contextList.size() +")"); //$NON-NLS-1$
-	
-				
 				
 				for (Iterator<EntityContentProducer> i = contentProducers.iterator(); i
 						.hasNext();)
@@ -892,6 +878,15 @@ public class SearchBuilderQueueManager implements IndexUpdateTransactionListener
 								log.error("Failed to update " + sqlex.getMessage()); //$NON-NLS-1$
 							}
 							connection.commit();
+							if (itemCount == itemSleepInterval) {
+								log.info("procced a block of " + itemSleepInterval + " sleeping to allow gc total items: " + itemCountTotal);
+								Thread.sleep(sleepTime);
+								itemCount = 0;
+							} else {
+								itemCount++;
+								itemCountTotal++;
+							}
+
 						}
 						if (log.isDebugEnabled())
 							log.debug(" Added " + added); //$NON-NLS-1$
