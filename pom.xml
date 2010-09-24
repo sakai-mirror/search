@@ -341,16 +341,20 @@
                     </tags>
                 </configuration>
             </plugin>
+            <!-- Build errors encountered during release: could not find resource src/site/checkstyle.xml   
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <configLocation>src/site/checkstyle.xml</configLocation>
                 </configuration>
+                -->
                 <!--
                     <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
                 -->
+            <!--
             </plugin>
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
