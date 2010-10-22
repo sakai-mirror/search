@@ -949,7 +949,7 @@ public class JournaledFSIndexStorage implements JournaledIndex, IndexStorageProv
 	 */
 	public void setRecoverCorruptedIndex(boolean recover)
 	{
-		log.warn("Recover Indexes not implemented, yet");
+		log.debug("Recover Indexes not implemented, yet");
 	}
 
 	public class SizeAction implements FileUtils.RecurseAction
