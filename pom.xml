@@ -99,7 +99,7 @@
             <dependency>
                 <groupId>org.sakaiproject.entitybroker</groupId>
                 <artifactId>entitybroker-utils</artifactId>
-                <version>1.4.0-a02</version>
+                <version>1.4.0-a03</version>
             </dependency>
             <!-- remove ABOVE HERE -->
         </dependencies>
