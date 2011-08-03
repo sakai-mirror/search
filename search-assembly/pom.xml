@@ -15,7 +15,7 @@
     <parent>
         <artifactId>search</artifactId>
         <groupId>org.sakaiproject.search</groupId>
-        <version>1.2.9</version>
+        <version>1.2.10-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
