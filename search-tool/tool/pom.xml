@@ -69,6 +69,7 @@
       <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-api</artifactId>
       <type>jar</type>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>

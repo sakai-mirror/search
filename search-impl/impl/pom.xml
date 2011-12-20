@@ -142,6 +142,7 @@
       <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-api</artifactId>
       <type>jar</type>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.search</groupId>
@@ -152,6 +153,7 @@
       <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-util</artifactId>
       <type>jar</type>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>

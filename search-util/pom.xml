@@ -71,6 +71,7 @@
     <dependency>
       <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
