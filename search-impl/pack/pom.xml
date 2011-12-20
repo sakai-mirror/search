@@ -49,6 +49,7 @@
       <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-impl</artifactId>
       <type>jar</type>
+      <version>${project.version}</version>
     </dependency>
     
   </dependencies>
