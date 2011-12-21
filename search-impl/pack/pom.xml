@@ -47,10 +47,21 @@
   <dependencies>
     <dependency>
       <groupId>org.sakaiproject.search</groupId>
+      <artifactId>search-api</artifactId>
+      <type>jar</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.search</groupId>
       <artifactId>search-impl</artifactId>
       <type>jar</type>
       <version>${project.version}</version>
     </dependency>
-    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>search-util</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>    
   </dependencies>
 </project>
