@@ -82,14 +82,6 @@
         </dependencies>
     </dependencyManagement>
     
-    <distributionManagement>
-        <site>
-            <id>sakai-site</id>
-            <name>Sakai release Site</name>
-            <url>scpexe://source.sakaiproject.org/var/www/html/release/search/${project.version}</url>
-        </site>
-    </distributionManagement>
-    
     <developers>
         <developer>
             <id>david.horwitz@uct.ac.za</id>
