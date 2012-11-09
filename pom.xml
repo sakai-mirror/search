@@ -10,13 +10,13 @@
     <name>Sakai Search Project</name>
     <groupId>org.sakaiproject.search</groupId>
     <artifactId>search</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <scm>
-        <connection>scm:svn:https://source.sakaiproject.org/svn/search/tags/search-1.4.0</connection>
-        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/search/tags/search-1.4.0</developerConnection>
-        <url>https://source.sakaiproject.org/svn/search/tags/search-1.4.0</url>
+        <connection>scm:svn:https://source.sakaiproject.org/svn/search/branches/search-1.4.x</connection>
+        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/search/branches/search-1.4.x</developerConnection>
+        <url>https://source.sakaiproject.org/svn/search/branches/search-1.4.x</url>
     </scm>
     
     <profiles>
