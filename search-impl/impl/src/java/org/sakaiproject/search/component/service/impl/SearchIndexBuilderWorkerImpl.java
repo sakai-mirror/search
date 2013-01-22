@@ -736,7 +736,10 @@ public class SearchIndexBuilderWorkerImpl implements Runnable, SearchIndexBuilde
 		catch (Exception ex)
 		{
 			log.error("Failed to register node ", ex);
-			connection.rollback();
+			if (connection != null) 
+			{
+				connection.rollback();
+			}
 		}
 		finally
 		{
@@ -1137,7 +1140,10 @@ public class SearchIndexBuilderWorkerImpl implements Runnable, SearchIndexBuilde
 		{
 			try
 			{
-				connection.rollback();
+				if (connection != null) 
+				{
+					connection.rollback();
+				}
 			}
 			catch (SQLException e)
 			{
