@@ -348,13 +348,13 @@ public class TransactionalIndexWorker implements IndexWorker
 								idIndex = filterPunctuation(idIndex);
 								
 								doc.add(new Field(SearchService.FIELD_CONTENTS,
-										idIndex, Field.Store.COMPRESS,
+										idIndex, Field.Store.NO,
 										Field.Index.ANALYZED, Field.TermVector.YES));
 
 								// add the title 
 								String title = filterPunctuation(sep.getTitle(ref));
 								doc.add(new Field(SearchService.FIELD_CONTENTS,
-										title, Field.Store.COMPRESS,
+										title, Field.Store.NO,
 										Field.Index.ANALYZED, Field.TermVector.YES));
 
 								if (sep.isContentFromReader(ref))
