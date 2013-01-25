@@ -172,7 +172,10 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 				{
 					try
 					{
-						con.rollback();
+						if (con != null)
+						{
+							con.rollback();
+						}
 					}
 					catch (Exception e)
 					{
@@ -247,7 +250,7 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 					{
 						sbi.setSearchstate(SearchBuilderItem.STATE_COMPLETED);
 						updateOrSave(connection, sbi);
-						connection.commit();
+						
 
 						continue;
 					}
@@ -261,7 +264,7 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 						{
 							sbi.setSearchstate(SearchBuilderItem.STATE_COMPLETED);
 							updateOrSave(connection, sbi);
-							connection.commit();
+							
 						}
 						else
 						{
@@ -526,7 +529,7 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 						}
 						sbi.setSearchstate(SearchBuilderItem.STATE_COMPLETED);
 						updateOrSave(connection, sbi);
-						connection.commit();
+						
 					}
 					catch (Exception e1)
 					{
@@ -756,8 +759,13 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 		}
 		catch (Exception ex)
 		{
-			log.warn("Failed to perform index cycle " + ex.getMessage()); //$NON-NLS-1$
-			log.debug("Traceback is ", ex); //$NON-NLS-1$
+			log.warn("Failed to perform index cycle " + ex.getMessage(), ex); //$NON-NLS-1$
+			//rollback any uncommitted transactions
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				log.debug(e);
+			}
 		}
 		finally
 		{
@@ -1018,6 +1026,12 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 
 	}
 
+	/**
+	 *  Update a search builder item on success the item will be committed
+	 * @param connection
+	 * @param sbi
+	 * @throws SQLException
+	 */
 	private void updateOrSave(Connection connection, SearchBuilderItem sbi)
 			throws SQLException
 	{
@@ -1035,11 +1049,13 @@ public class SearchIndexBuilderWorkerDaoJdbcImpl implements SearchIndexBuilderWo
 						+ SEARCH_BUILDER_ITEM_FIELDS_UPDATE);
 				populateStatement(pst, sbi);
 				pst.executeUpdate();
+				connection.commit();
 			}
 		}
 		catch (SQLException ex)
 		{
 			log.warn("Failed ", ex); //$NON-NLS-1$
+			connection.rollback();
 			throw ex;
 		}
 		finally
